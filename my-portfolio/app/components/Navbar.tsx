@@ -4,8 +4,6 @@ import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
 
-const MotionLink = motion(Link);
-
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
@@ -38,6 +36,7 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Contact", href: "/contact" },
   ];
+  const MotionLink = motion(Link);
 
   return (
     <motion.nav
@@ -54,67 +53,70 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="flex justify-between items-center py-4 md:py-5">
           {/* Logo */}
-          <MotionLink
-            href="/"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative group inline-flex"
-          >
-            <div className="relative z-10 flex items-center gap-2">
+          <Link href="/" className="relative group">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative z-10 flex items-center gap-2"
+            >
               <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">
                 Gabriel Corgado | Software Engineer
               </span>
-            </div>
+            </motion.div>
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-violet-600/20 rounded-xl blur-xl"
               initial={{ opacity: 0, scale: 0.8 }}
               whileHover={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
             />
-          </MotionLink>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2">
             {navItems.map((item, index) => {
               const isActive = activeSection === item.name.toLowerCase();
               return (
-                <MotionLink
+                <Link
                   key={item.name}
                   href={item.href}
-                  initial={{ opacity: 0, y: -12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    delay: 0.04 * index,
-                    duration: 0.18,
-                    ease: [0.4, 0, 0.2, 1],
-                  }}
-                  whileHover={{
-                    y: -4,
-                    transition: { duration: 0.12, ease: "easeOut" },
-                  }}
-                  whileTap={{ y: -1 }}
                   onClick={() => setActiveSection(item.name.toLowerCase())}
-                  className={`relative px-4 py-2 rounded-lg font-bold transition-colors ${
-                    isActive ? "text-purple-400" : "text-slate-300 hover:text-white"
-                  }`}
+                  className="relative"
                 >
-                  <span className="relative z-10">{item.name}</span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeSection"
-                      className="absolute inset-0 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg"
-                      transition={{ type: "spring", stiffness: 560, damping: 26 }}
-                    />
-                  )}
                   <motion.div
-                    className="absolute inset-0 bg-slate-800/30 rounded-lg"
-                    initial={{ opacity: 0 }}
-                    whileHover={{
-                      opacity: 1,
-                      transition: { duration: 0.12, ease: "easeOut" },
+                    initial={{ opacity: 0, y: -12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: 0.03 * index,
+                      duration: 0.16,
+                      ease: [0.33, 1, 0.68, 1],
                     }}
-                  />
-                </MotionLink>
+                    whileHover={{
+                      y: -5,
+                      transition: { duration: 0.1, ease: "easeOut" },
+                    }}
+                    whileTap={{ y: -1, scale: 0.99 }}
+                    className={`relative px-4 py-2 rounded-lg font-bold transition-colors ${
+                      isActive ? "text-purple-400" : "text-slate-300 hover:text-white"
+                    }`}
+                  >
+                    <span className="relative z-10">{item.name}</span>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSection"
+                        className="absolute inset-0 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg"
+                        transition={{ type: "spring", stiffness: 600, damping: 28 }}
+                      />
+                    )}
+                    <motion.div
+                      className="absolute inset-0 bg-slate-800/30 rounded-lg"
+                      initial={{ opacity: 0 }}
+                      whileHover={{
+                        opacity: 1,
+                        transition: { duration: 0.1, ease: "easeOut" },
+                      }}
+                    />
+                  </motion.div>
+                </Link>
               );
             })}
           </div>
@@ -152,41 +154,35 @@ export default function Navbar() {
       >
         <div className="px-6 py-4 space-y-2">
           {navItems.map((item, index) => (
-            <motion.div
-              key={item.name}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.03 * index, duration: 0.16, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <MotionLink
-                href={item.href}
-                onClick={() => {
-                  setActiveSection(item.name.toLowerCase());
-                  setIsMenuOpen(false);
-                }}
-                className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
-                  activeSection === item.name.toLowerCase()
-                    ? "bg-slate-800/50 text-purple-400 border border-slate-700/50"
-                    : "text-slate-300 hover:bg-slate-800/30 hover:text-white"
-                }`}
-              >
-                {item.name}
-              </MotionLink>
-            </motion.div>
-          ))}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.12, duration: 0.16, ease: [0.4, 0, 0.2, 1] }}
-          >
             <MotionLink
-              href="/contact"
-              onClick={() => setIsMenuOpen(false)}
-              className="block px-4 py-3 mt-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white text-center rounded-lg font-semibold shadow-lg shadow-purple-500/30"
+              key={item.name}
+              href={item.href}
+              initial={{ opacity: 0, x: -18 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.04 * index, duration: 0.16, ease: [0.33, 1, 0.68, 1] }}
+              onClick={() => {
+                setActiveSection(item.name.toLowerCase());
+                setIsMenuOpen(false);
+              }}
+              className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
+                activeSection === item.name.toLowerCase()
+                  ? "bg-slate-800/50 text-purple-400 border border-slate-700/50"
+                  : "text-slate-300 hover:bg-slate-800/30 hover:text-white"
+              }`}
             >
-              Hire Me
+              {item.name}
             </MotionLink>
-          </motion.div>
+          ))}
+          <MotionLink
+            href="/contact"
+            initial={{ opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.16, duration: 0.16, ease: [0.33, 1, 0.68, 1] }}
+            onClick={() => setIsMenuOpen(false)}
+            className="block px-4 py-3 mt-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white text-center rounded-lg font-semibold shadow-lg shadow-purple-500/30"
+          >
+            Hire Me
+          </MotionLink>
         </div>
       </motion.div>
 

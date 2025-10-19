@@ -122,8 +122,11 @@ export default function Projects() {
 
                 <div className="space-y-6">
                   {section.items.map((project, index) => (
-                    <motion.div
+                    <motion.a
                       key={project.id}
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -133,25 +136,16 @@ export default function Projects() {
                         scale: 1.01,
                         transition: { duration: 0.12, ease: "easeOut" },
                       }}
-                      className="relative bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200"
+                      className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 hover:opacity-100 transition-opacity duration-500" />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                       <div className="relative p-6 md:p-8">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
                           <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
-                          <motion.a
-                            href={project.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            whileHover={{
-                              x: 6,
-                              transition: { duration: 0.12, ease: "easeOut" },
-                            }}
-                            className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium transition-colors self-start"
-                          >
+                          <div className="inline-flex items-center gap-2 text-purple-400 font-medium">
                             Visit Site
                             <FiArrowUpRight className="text-lg" aria-hidden />
-                          </motion.a>
+                          </div>
                         </div>
 
                         <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
@@ -184,7 +178,7 @@ export default function Projects() {
                           ))}
                         </div>
                       </div>
-                    </motion.div>
+                    </motion.a>
                   ))}
                 </div>
               </div>
