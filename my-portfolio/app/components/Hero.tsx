@@ -33,7 +33,10 @@ export default function Hero() {
             animate: { opacity: 1, y: 0 },
             transition: { delay, duration: 0.6, ease: "easeOut" as const },
           }
-        : {},
+        : {
+            initial: false,
+            animate: { opacity: 1, y: 0 },
+          },
     [shouldAnimate]
   );
 
@@ -151,12 +154,16 @@ export default function Hero() {
           className="relative flex-shrink-0 w-full md:w-auto flex justify-center"
         >
           <motion.div
-            animate={shouldAnimate ? { x: mousePosition.x, y: mousePosition.y } : undefined}
+            animate={
+              shouldAnimate
+                ? { x: mousePosition.x, y: mousePosition.y }
+                : { x: 0, y: 0 }
+            }
             transition={shouldAnimate ? { type: "spring", stiffness: 50, damping: 20 } : undefined}
             className="relative"
           >
             <motion.div
-              animate={shouldAnimate ? { rotate: 360 } : undefined}
+              animate={shouldAnimate ? { rotate: 360 } : { rotate: 0 }}
               transition={shouldAnimate ? { duration: 20, repeat: Infinity, ease: "linear" } : undefined}
               className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-violet-600 to-purple-600 rounded-full opacity-75 blur-2xl"
             />
@@ -198,14 +205,14 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={shouldAnimate ? { y: [0, 10, 0] } : undefined}
+          animate={shouldAnimate ? { y: [0, 10, 0] } : { y: 0 }}
           transition={shouldAnimate ? { duration: 2, repeat: Infinity } : undefined}
           className="flex flex-col items-center gap-2"
         >
           <span className="text-slate-400 text-sm">Scroll to explore</span>
           <div className="w-6 h-10 border-2 border-slate-600 rounded-full flex justify-center">
             <motion.div
-              animate={shouldAnimate ? { y: [0, 12, 0] } : undefined}
+              animate={shouldAnimate ? { y: [0, 12, 0] } : { y: 0 }}
               transition={shouldAnimate ? { duration: 2, repeat: Infinity } : undefined}
               className="w-1 h-3 bg-slate-400 rounded-full"
             />

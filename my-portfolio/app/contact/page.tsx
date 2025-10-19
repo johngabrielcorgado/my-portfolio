@@ -153,7 +153,7 @@ export default function ContactPage() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
           {/* Left column - Info */}
           <motion.div
-            initial={shouldAnimate ? { opacity: 0, x: -40 } : undefined}
+            initial={shouldAnimate ? { opacity: 0, x: -40 } : false}
             animate={shouldAnimate ? { opacity: 1, x: 0 } : undefined}
             transition={shouldAnimate ? { duration: 0.6 } : undefined}
             className="space-y-8"
@@ -161,7 +161,7 @@ export default function ContactPage() {
             {/* Header */}
             <div>
               <motion.span
-                initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : undefined}
+                initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : false}
                 animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
                 transition={shouldAnimate ? { duration: 0.5 } : undefined}
                 className="inline-block px-4 py-2 bg-purple-500/10 backdrop-blur-sm border border-purple-500/20 rounded-full text-purple-300 text-sm font-medium mb-4"
@@ -186,7 +186,7 @@ export default function ContactPage() {
                 <motion.a
                   key={method.label}
                   href={method.href}
-                  initial={shouldAnimate ? { opacity: 0, x: -18 } : undefined}
+                  initial={shouldAnimate ? { opacity: 0, x: -18 } : false}
                   animate={shouldAnimate ? { opacity: 1, x: 0 } : undefined}
                   transition={
                     shouldAnimate
@@ -224,7 +224,7 @@ export default function ContactPage() {
 
             {/* Availability indicator */}
             <motion.div
-              initial={shouldAnimate ? { opacity: 0 } : undefined}
+              initial={shouldAnimate ? { opacity: 0 } : false}
               animate={shouldAnimate ? { opacity: 1 } : undefined}
               transition={shouldAnimate ? { delay: 0.5 } : undefined}
               className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/20 rounded-xl"
@@ -238,7 +238,7 @@ export default function ContactPage() {
 
           {/* Right column - Form */}
           <motion.div
-            initial={shouldAnimate ? { opacity: 0, x: 40 } : undefined}
+            initial={shouldAnimate ? { opacity: 0, x: 40 } : false}
             animate={shouldAnimate ? { opacity: 1, x: 0 } : undefined}
             transition={shouldAnimate ? { duration: 0.6 } : undefined}
             className="relative"
@@ -250,13 +250,13 @@ export default function ContactPage() {
                 {isSuccess ? (
                   <motion.div
                     key="success"
-                    initial={shouldAnimate ? { opacity: 0, scale: 0.8 } : undefined}
+                    initial={shouldAnimate ? { opacity: 0, scale: 0.8 } : false}
                     animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
                     exit={shouldAnimate ? { opacity: 0, scale: 0.8 } : undefined}
                     className="text-center py-12"
                   >
                     <motion.div
-                      initial={shouldAnimate ? { scale: 0 } : undefined}
+                      initial={shouldAnimate ? { scale: 0 } : false}
                       animate={shouldAnimate ? { scale: 1 } : undefined}
                       transition={
                         shouldAnimate
@@ -276,7 +276,7 @@ export default function ContactPage() {
                   <motion.form
                     key="form"
                     onSubmit={handleSubmit}
-                    initial={shouldAnimate ? { opacity: 0 } : undefined}
+                    initial={shouldAnimate ? { opacity: 0 } : false}
                     animate={shouldAnimate ? { opacity: 1 } : undefined}
                     exit={shouldAnimate ? { opacity: 0 } : undefined}
                     className="space-y-6"
@@ -303,11 +303,11 @@ export default function ContactPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {nameFields.map((field) => (
                         <div key={field} className="relative">
-                          <motion.input
-                            type="text"
-                            name={field}
-                            placeholder={field === 'first' ? 'First Name' : 'Last Name'}
-                            value={formData[field]}
+                      <motion.input
+                        type="text"
+                        name={field}
+                        placeholder={field === 'first' ? 'First Name' : 'Last Name'}
+                        value={formData[field]}
                             onChange={handleChange}
                             onFocus={() => setFocusedField(field)}
                             onBlur={() => setFocusedField(null)}
@@ -432,7 +432,7 @@ export default function ContactPage() {
                         {isSubmitting ? (
                           <>
                             <motion.div
-                              animate={shouldAnimate ? { rotate: 360 } : undefined}
+                              animate={shouldAnimate ? { rotate: 360 } : { rotate: 0 }}
                               transition={
                                 shouldAnimate
                                   ? { duration: 1, repeat: Infinity, ease: "linear" }
