@@ -178,7 +178,7 @@ export default function Footer() {
           
           <div className="flex items-center gap-6 text-sm">
             <motion.a
-              href="#"
+              href="/privacy"
               whileHover={{
                 y: -3,
                 color: '#a78bfa',
@@ -189,7 +189,7 @@ export default function Footer() {
               Privacy Policy
             </motion.a>
             <motion.a
-              href="#"
+              href="/terms"
               whileHover={{
                 y: -3,
                 color: '#a78bfa',
