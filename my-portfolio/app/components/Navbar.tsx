@@ -10,33 +10,9 @@ import {
   useTransform,
 } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
+import useIsMobile from "../hooks/use-is-mobile";
 
 const MotionLink = motion(Link);
-const MOBILE_QUERY = "(max-width: 768px)";
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const media = window.matchMedia(MOBILE_QUERY);
-    const handler = (event?: MediaQueryListEvent) =>
-      setIsMobile(event ? event.matches : media.matches);
-
-    handler();
-
-    if (media.addEventListener) {
-      media.addEventListener("change", handler);
-      return () => media.removeEventListener("change", handler);
-    }
-
-    media.addListener(handler);
-    return () => media.removeListener(handler);
-  }, []);
-
-  return isMobile;
-}
-
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");

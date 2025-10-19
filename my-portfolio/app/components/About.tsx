@@ -1,8 +1,9 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { FiPenTool, FiServer, FiSmartphone, FiZap } from "react-icons/fi";
+import useIsMobile from "../hooks/use-is-mobile";
 
 const techStack = [
   { name: "Next.js", category: "Frontend" },
@@ -20,31 +21,6 @@ const skills = [
   { title: "Full-Stack Development", percentage: 100, color: "from-purple-600 to-violet-600" },
   { title: "UI/UX Design", percentage: 90, color: "from-violet-600 to-purple-600" },
 ];
-
-const MOBILE_QUERY = "(max-width: 768px)";
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const media = window.matchMedia(MOBILE_QUERY);
-    const handler = (event?: MediaQueryListEvent) =>
-      setIsMobile(event ? event.matches : media.matches);
-
-    handler();
-
-    if (media.addEventListener) {
-      media.addEventListener("change", handler);
-      return () => media.removeEventListener("change", handler);
-    }
-
-    media.addListener(handler);
-    return () => media.removeListener(handler);
-  }, []);
-
-  return isMobile;
-}
 
 const capabilities = [
   { icon: <FiPenTool />, title: "UI/UX Design", desc: "Beautiful interfaces" },
