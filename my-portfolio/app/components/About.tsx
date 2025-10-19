@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { FiPenTool, FiServer, FiSmartphone, FiZap } from "react-icons/fi";
@@ -21,6 +21,31 @@ const skills = [
   { title: "UI/UX Design", percentage: 90, color: "from-violet-600 to-purple-600" },
 ];
 
+const MOBILE_QUERY = "(max-width: 768px)";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const media = window.matchMedia(MOBILE_QUERY);
+    const handler = (event?: MediaQueryListEvent) =>
+      setIsMobile(event ? event.matches : media.matches);
+
+    handler();
+
+    if (media.addEventListener) {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+
+    media.addListener(handler);
+    return () => media.removeListener(handler);
+  }, []);
+
+  return isMobile;
+}
+
 const capabilities = [
   { icon: <FiPenTool />, title: "UI/UX Design", desc: "Beautiful interfaces" },
   { icon: <FiServer />, title: "Backend Dev", desc: "Robust systems" },
@@ -30,6 +55,7 @@ const capabilities = [
 
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
   const revealTransition = useMemo(
     () =>
       prefersReducedMotion
@@ -37,9 +63,16 @@ export default function About() {
         : { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
     [prefersReducedMotion]
   );
-  const hoverTransition = prefersReducedMotion
-    ? { duration: 0.1, ease: "linear" as const }
-    : { duration: 0.12, ease: "easeOut" as const };
+  const hoverTransition = useMemo(
+    () =>
+      prefersReducedMotion
+        ? { duration: 0.1, ease: "linear" as const }
+        : {
+            duration: isMobile ? 0.1 : 0.12,
+            ease: "easeOut" as const,
+          },
+    [prefersReducedMotion, isMobile]
+  );
   return (
     <section id="about" className="relative py-24 md:py-32 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 overflow-hidden">
       {/* Background effects */}
@@ -127,7 +160,12 @@ export default function About() {
                     viewport={{ once: true, amount: 0.3 }}
                     transition={{
                       delay: prefersReducedMotion ? 0 : index * 0.08,
-                      ...revealTransition,
+                      ...(prefersReducedMotion
+                        ? revealTransition
+                        : {
+                            duration: isMobile ? 0.4 : revealTransition.duration,
+                            ease: revealTransition.ease,
+                          }),
                     }}
                   >
                     <div className="flex justify-between items-center mb-2">
@@ -141,7 +179,11 @@ export default function About() {
                         viewport={{ once: true }}
                         transition={{
                           delay: prefersReducedMotion ? 0 : index * 0.08 + 0.2,
-                          duration: prefersReducedMotion ? 0.45 : 1,
+                          duration: prefersReducedMotion
+                            ? 0.45
+                            : isMobile
+                            ? 0.7
+                            : 1,
                           ease: "easeOut",
                         }}
                         className={`h-full bg-gradient-to-r ${skill.color} rounded-full relative`}
@@ -167,12 +209,12 @@ export default function About() {
                   viewport={{ once: true, amount: 0.25 }}
                   transition={{
                     delay: prefersReducedMotion ? 0 : index * 0.08 + 0.2,
-                    duration: prefersReducedMotion ? 0.2 : 0.4,
+                    duration: prefersReducedMotion ? 0.2 : isMobile ? 0.3 : 0.4,
                     ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
                   }}
                   whileHover={{
-                    y: prefersReducedMotion ? -2 : -6,
-                    scale: prefersReducedMotion ? 1.01 : 1.02,
+                    y: prefersReducedMotion ? -2 : isMobile ? -3 : -6,
+                    scale: prefersReducedMotion ? 1.01 : isMobile ? 1.01 : 1.02,
                     transition: hoverTransition,
                   }}
                   className="bg-gradient-to-br from-purple-900/30 to-violet-900/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 text-center"
@@ -220,12 +262,12 @@ export default function About() {
                   viewport={{ once: true }}
                   transition={{
                     delay: prefersReducedMotion ? 0 : index * 0.06,
-                    duration: prefersReducedMotion ? 0.2 : 0.3,
+                    duration: prefersReducedMotion ? 0.2 : isMobile ? 0.24 : 0.3,
                     ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
                   }}
                   whileHover={{
-                    y: prefersReducedMotion ? -3 : -6,
-                    scale: prefersReducedMotion ? 1.01 : 1.03,
+                    y: prefersReducedMotion ? -3 : isMobile ? -4 : -6,
+                    scale: prefersReducedMotion ? 1.01 : isMobile ? 1.02 : 1.03,
                     transition: hoverTransition,
                   }}
                   className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4 sm:p-5 text-center"
@@ -265,12 +307,12 @@ export default function About() {
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{
                   delay: prefersReducedMotion ? 0 : index * 0.04,
-                  duration: prefersReducedMotion ? 0.18 : 0.32,
+                  duration: prefersReducedMotion ? 0.18 : isMobile ? 0.26 : 0.32,
                   ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
                 }}
                 whileHover={{
-                  y: prefersReducedMotion ? -4 : -8,
-                  scale: prefersReducedMotion ? 1.02 : 1.08,
+                  y: prefersReducedMotion ? -4 : isMobile ? -5 : -8,
+                  scale: prefersReducedMotion ? 1.02 : isMobile ? 1.05 : 1.08,
                   transition: hoverTransition,
                 }}
                 className="group relative"

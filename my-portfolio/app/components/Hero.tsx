@@ -2,13 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const handleMouseMove = (e: { clientX: number; clientY: number }) => {
+      if (window.innerWidth <= 1024) return;
       setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
         y: (e.clientY / window.innerHeight - 0.5) * 20,
@@ -16,6 +21,21 @@ export default function Hero() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const media = window.matchMedia("(max-width: 768px)");
+    const handler = (event?: MediaQueryListEvent) =>
+      setIsMobile(event ? event.matches : media.matches);
+
+    handler();
+    if (media.addEventListener) {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+    media.addListener(handler);
+    return () => media.removeListener(handler);
   }, []);
 
   return (
@@ -24,11 +44,11 @@ export default function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           animate={{
-            scale: [1, 1.2, 1],
+            scale: [1, prefersReducedMotion || isMobile ? 1.05 : 1.2, 1],
             rotate: [0, 90, 0],
           }}
           transition={{
-            duration: 20,
+            duration: prefersReducedMotion || isMobile ? 24 : 20,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -36,11 +56,11 @@ export default function Hero() {
         />
         <motion.div
           animate={{
-            scale: [1.2, 1, 1.2],
+            scale: [prefersReducedMotion || isMobile ? 1.05 : 1.2, 1, prefersReducedMotion || isMobile ? 1.05 : 1.2],
             rotate: [90, 0, 90],
           }}
           transition={{
-            duration: 25,
+            duration: prefersReducedMotion || isMobile ? 28 : 25,
             repeat: Infinity,
             ease: "linear"
           }}
@@ -89,17 +109,17 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
+            transition={{ delay: 0.5, duration: prefersReducedMotion ? 0.4 : isMobile ? 0.5 : 0.6 }}
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto items-stretch sm:items-center md:justify-start"
           >
             <motion.a
               href="/contact"
               whileHover={{
-                scale: 1.05,
-                y: -3,
-                transition: { duration: 0.12, ease: "easeOut" },
+                scale: prefersReducedMotion ? 1.01 : isMobile ? 1.03 : 1.05,
+                y: prefersReducedMotion ? -2 : isMobile ? -2 : -3,
+                transition: { duration: prefersReducedMotion ? 0.1 : 0.12, ease: "easeOut" },
               }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: prefersReducedMotion ? 0.995 : isMobile ? 0.985 : 0.97 }}
               className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl font-semibold overflow-hidden shadow-lg shadow-purple-500/50 transition-all text-center"
             >
               <span className="relative z-10">Let&apos;s Work Together</span>
@@ -114,11 +134,11 @@ export default function Hero() {
             <motion.a
               href="#projects"
               whileHover={{
-                scale: 1.05,
-                y: -3,
-                transition: { duration: 0.12, ease: "easeOut" },
+                scale: prefersReducedMotion ? 1.01 : isMobile ? 1.03 : 1.05,
+                y: prefersReducedMotion ? -2 : isMobile ? -2 : -3,
+                transition: { duration: prefersReducedMotion ? 0.1 : 0.12, ease: "easeOut" },
               }}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: prefersReducedMotion ? 0.995 : isMobile ? 0.985 : 0.97 }}
               className="w-full sm:w-auto px-8 py-4 bg-slate-800/50 backdrop-blur-sm text-slate-200 border border-slate-700 rounded-xl font-semibold hover:bg-slate-800/80 transition-all text-center"
             >
               View My Work

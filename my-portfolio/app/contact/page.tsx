@@ -34,6 +34,22 @@ export default function ContactPage() {
   const [error, setError] = useState<string | null>(null);
   const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
   const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const media = window.matchMedia("(max-width: 768px)");
+    const handler = (event?: MediaQueryListEvent) =>
+      setIsMobile(event ? event.matches : media.matches);
+
+    handler();
+    if (media.addEventListener) {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+    media.addListener(handler);
+    return () => media.removeListener(handler);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -202,12 +218,12 @@ export default function ContactPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
                     delay: prefersReducedMotion ? 0 : index * 0.06,
-                    duration: prefersReducedMotion ? 0.2 : 0.32,
+                    duration: prefersReducedMotion ? 0.2 : isMobile ? 0.25 : 0.32,
                     ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
                   }}
                   whileHover={{
-                    x: prefersReducedMotion ? 4 : 8,
-                    scale: prefersReducedMotion ? 1 : 1.02,
+                    x: prefersReducedMotion ? 4 : isMobile ? 6 : 8,
+                    scale: prefersReducedMotion ? 1 : isMobile ? 1.01 : 1.02,
                     transition: prefersReducedMotion
                       ? { duration: 0.1 }
                       : { duration: 0.12, ease: "easeOut" },
@@ -239,12 +255,12 @@ export default function ContactPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{
                       delay: prefersReducedMotion ? 0 : 0.25 + index * 0.04,
-                      duration: prefersReducedMotion ? 0.18 : 0.28,
+                      duration: prefersReducedMotion ? 0.18 : isMobile ? 0.22 : 0.28,
                       ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
                     }}
                     whileHover={{
-                      scale: prefersReducedMotion ? 1.02 : 1.06,
-                      y: prefersReducedMotion ? -2 : -4,
+                      scale: prefersReducedMotion ? 1.02 : isMobile ? 1.03 : 1.06,
+                      y: prefersReducedMotion ? -2 : isMobile ? -3 : -4,
                       transition: prefersReducedMotion
                         ? { duration: 0.1 }
                         : { duration: 0.12, ease: "easeOut" },

@@ -1,15 +1,72 @@
 "use client";
-import React, { useState, useEffect } from "react";
+
+// this comment are for commits
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
+
+const MotionLink = motion(Link);
+const MOBILE_QUERY = "(max-width: 768px)";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const media = window.matchMedia(MOBILE_QUERY);
+    const handler = (event?: MediaQueryListEvent) =>
+      setIsMobile(event ? event.matches : media.matches);
+
+    handler();
+
+    if (media.addEventListener) {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+
+    media.addListener(handler);
+    return () => media.removeListener(handler);
+  }, []);
+
+  return isMobile;
+}
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const isMobile = useIsMobile();
   const { scrollY } = useScroll();
   const navOpacity = useTransform(scrollY, [0, 100], [0.8, 1]);
+
+  const desktopTransition = useMemo(
+    () =>
+      prefersReducedMotion
+        ? { duration: 0.1, ease: "linear" as const }
+        : {
+            duration: isMobile ? 0.12 : 0.16,
+            ease: [0.33, 1, 0.68, 1] as const,
+          },
+    [prefersReducedMotion, isMobile]
+  );
+
+  const hoverTransition = useMemo(
+    () =>
+      prefersReducedMotion
+        ? { duration: 0.1, ease: "linear" as const }
+        : {
+            duration: isMobile ? 0.08 : 0.1,
+            ease: "easeOut" as const,
+          },
+    [prefersReducedMotion, isMobile]
+  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,13 +93,16 @@ export default function Navbar() {
     { name: "Home", href: "/" },
     { name: "Contact", href: "/contact" },
   ];
-  const MotionLink = motion(Link);
 
   return (
     <motion.nav
-      initial={{ y: -100, opacity: 0 }}
+      initial={prefersReducedMotion ? false : { y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0.2 }
+          : { duration: isMobile ? 0.35 : 0.5, ease: "easeOut" }
+      }
       style={{ opacity: navOpacity }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
@@ -76,47 +136,45 @@ export default function Navbar() {
             {navItems.map((item, index) => {
               const isActive = activeSection === item.name.toLowerCase();
               return (
-                <Link
+                <MotionLink
                   key={item.name}
                   href={item.href}
                   onClick={() => setActiveSection(item.name.toLowerCase())}
-                  className="relative"
+                  className={`relative px-4 py-2 rounded-lg font-bold transition-colors ${
+                    isActive ? "text-purple-400" : "text-slate-300 hover:text-white"
+                  }`}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: prefersReducedMotion ? 0 : 0.025 * index,
+                    ...desktopTransition,
+                  }}
+                  whileHover={{
+                    y: isMobile ? -3 : -5,
+                    transition: hoverTransition,
+                  }}
+                  whileTap={{
+                    y: prefersReducedMotion ? 0 : -1,
+                    scale: prefersReducedMotion || isMobile ? 1 : 0.99,
+                  }}
                 >
-                  <motion.div
-                    initial={{ opacity: 0, y: -12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.03 * index,
-                      duration: 0.16,
-                      ease: [0.33, 1, 0.68, 1],
-                    }}
-                    whileHover={{
-                      y: -5,
-                      transition: { duration: 0.1, ease: "easeOut" },
-                    }}
-                    whileTap={{ y: -1, scale: 0.99 }}
-                    className={`relative px-4 py-2 rounded-lg font-bold transition-colors ${
-                      isActive ? "text-purple-400" : "text-slate-300 hover:text-white"
-                    }`}
-                  >
-                    <span className="relative z-10">{item.name}</span>
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeSection"
-                        className="absolute inset-0 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg"
-                        transition={{ type: "spring", stiffness: 600, damping: 28 }}
-                      />
-                    )}
+                  <span className="relative z-10">{item.name}</span>
+                  {isActive && (
                     <motion.div
-                      className="absolute inset-0 bg-slate-800/30 rounded-lg"
-                      initial={{ opacity: 0 }}
-                      whileHover={{
-                        opacity: 1,
-                        transition: { duration: 0.1, ease: "easeOut" },
-                      }}
+                      layoutId="activeSection"
+                      className="absolute inset-0 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg"
+                      transition={{ type: "spring", stiffness: 600, damping: 28 }}
                     />
-                  </motion.div>
-                </Link>
+                  )}
+                  <motion.div
+                    className="absolute inset-0 bg-slate-800/30 rounded-lg"
+                    initial={{ opacity: 0 }}
+                    whileHover={{
+                      opacity: 1,
+                      transition: hoverTransition,
+                    }}
+                  />
+                </MotionLink>
               );
             })}
           </div>
@@ -148,7 +206,11 @@ export default function Navbar() {
             ? { opacity: 1, height: "auto" }
             : { opacity: 0, height: 0, transitionEnd: { display: "none" } }
         }
-        transition={{ duration: 0.25, ease: "easeInOut" }}
+        transition={
+          prefersReducedMotion
+            ? { duration: 0.15 }
+            : { duration: isMobile ? 0.16 : 0.2, ease: [0.33, 1, 0.68, 1] }
+        }
         className="md:hidden border-t border-slate-800/50 bg-slate-950/95 backdrop-blur-xl overflow-hidden"
         style={{ display: isMenuOpen ? "block" : "none" }}
       >
@@ -157,9 +219,17 @@ export default function Navbar() {
             <MotionLink
               key={item.name}
               href={item.href}
-              initial={{ opacity: 0, x: -18 }}
+              initial={prefersReducedMotion ? false : { opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.04 * index, duration: 0.16, ease: [0.33, 1, 0.68, 1] }}
+              transition={{
+                delay: prefersReducedMotion ? 0 : 0.03 * index,
+                ...(prefersReducedMotion
+                  ? { duration: 0.12, ease: "linear" as const }
+                  : {
+                      duration: isMobile ? 0.14 : 0.16,
+                      ease: [0.33, 1, 0.68, 1] as const,
+                    }),
+              }}
               onClick={() => {
                 setActiveSection(item.name.toLowerCase());
                 setIsMenuOpen(false);
@@ -175,9 +245,17 @@ export default function Navbar() {
           ))}
           <MotionLink
             href="/contact"
-            initial={{ opacity: 0, x: 18 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.16, duration: 0.16, ease: [0.33, 1, 0.68, 1] }}
+            transition={
+              prefersReducedMotion
+                ? { duration: 0.12 }
+                : {
+                    delay: 0.12,
+                    duration: isMobile ? 0.14 : 0.16,
+                    ease: [0.33, 1, 0.68, 1],
+                  }
+            }
             onClick={() => setIsMenuOpen(false)}
             className="block px-4 py-3 mt-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white text-center rounded-lg font-semibold shadow-lg shadow-purple-500/30"
           >
@@ -191,7 +269,7 @@ export default function Navbar() {
         className="h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: isScrolled ? 1 : 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: prefersReducedMotion ? 0.2 : 0.4 }}
       />
     </motion.nav>
   );

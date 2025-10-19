@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 
@@ -11,6 +12,31 @@ type Project = {
   link: string;
   status?: string;
 };
+
+const MOBILE_QUERY = "(max-width: 768px)";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const media = window.matchMedia(MOBILE_QUERY);
+    const handler = (event?: MediaQueryListEvent) =>
+      setIsMobile(event ? event.matches : media.matches);
+
+    handler();
+
+    if (media.addEventListener) {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+
+    media.addListener(handler);
+    return () => media.removeListener(handler);
+  }, []);
+
+  return isMobile;
+}
 
 const clientProjects: Project[] = [
   {
@@ -47,12 +73,27 @@ const personalProjects: Project[] = [
 
 export default function Projects() {
   const prefersReducedMotion = useReducedMotion();
-  const cardTransition = prefersReducedMotion
-    ? { duration: 0.18, ease: "linear" as const }
-    : { duration: 0.35, ease: [0.4, 0, 0.2, 1] as const };
-  const hoverTransition = prefersReducedMotion
-    ? { duration: 0.1, ease: "linear" as const }
-    : { duration: 0.12, ease: "easeOut" as const };
+  const isMobile = useIsMobile();
+  const cardTransition = useMemo(
+    () =>
+      prefersReducedMotion
+        ? { duration: 0.18, ease: "linear" as const }
+        : {
+            duration: isMobile ? 0.28 : 0.35,
+            ease: [0.4, 0, 0.2, 1] as const,
+          },
+    [prefersReducedMotion, isMobile]
+  );
+  const hoverTransition = useMemo(
+    () =>
+      prefersReducedMotion
+        ? { duration: 0.1, ease: "linear" as const }
+        : {
+            duration: isMobile ? 0.1 : 0.12,
+            ease: "easeOut" as const,
+          },
+    [prefersReducedMotion, isMobile]
+  );
   return (
     <section id="projects" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
       {/* Background effects */}
@@ -142,8 +183,8 @@ export default function Projects() {
                         ...cardTransition,
                       }}
                       whileHover={{
-                        y: prefersReducedMotion ? -2 : -6,
-                        scale: prefersReducedMotion ? 1 : 1.01,
+                        y: prefersReducedMotion ? -2 : isMobile ? -3 : -6,
+                        scale: prefersReducedMotion ? 1 : isMobile ? 1.005 : 1.01,
                         transition: hoverTransition,
                       }}
                       className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
@@ -168,7 +209,10 @@ export default function Projects() {
                               initial={{ opacity: 0, y: 10 }}
                               whileInView={{ opacity: 1, y: 0 }}
                               viewport={{ once: true }}
-                              transition={{ duration: prefersReducedMotion ? 0.2 : 0.3 }}
+                              transition={{
+                                duration: prefersReducedMotion ? 0.18 : isMobile ? 0.24 : 0.3,
+                                ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                              }}
                               className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
                             >
                               {project.status}
