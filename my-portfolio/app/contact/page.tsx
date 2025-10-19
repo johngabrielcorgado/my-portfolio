@@ -154,7 +154,7 @@ export default function ContactPage() {
           {/* Left column - Info */}
           <motion.div
             initial={shouldAnimate ? { opacity: 0, x: -40 } : false}
-            animate={shouldAnimate ? { opacity: 1, x: 0 } : undefined}
+            animate={{ opacity: 1, x: 0 }}
             transition={shouldAnimate ? { duration: 0.6 } : undefined}
             className="space-y-8"
           >
@@ -162,7 +162,7 @@ export default function ContactPage() {
             <div>
               <motion.span
                 initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : false}
-                animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+                animate={{ opacity: 1, scale: 1 }}
                 transition={shouldAnimate ? { duration: 0.5 } : undefined}
                 className="inline-block px-4 py-2 bg-purple-500/10 backdrop-blur-sm border border-purple-500/20 rounded-full text-purple-300 text-sm font-medium mb-4"
               >
@@ -187,7 +187,7 @@ export default function ContactPage() {
                   key={method.label}
                   href={method.href}
                   initial={shouldAnimate ? { opacity: 0, x: -18 } : false}
-                  animate={shouldAnimate ? { opacity: 1, x: 0 } : undefined}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={
                     shouldAnimate
                       ? {
@@ -225,7 +225,7 @@ export default function ContactPage() {
             {/* Availability indicator */}
             <motion.div
               initial={shouldAnimate ? { opacity: 0 } : false}
-              animate={shouldAnimate ? { opacity: 1 } : undefined}
+              animate={{ opacity: 1 }}
               transition={shouldAnimate ? { delay: 0.5 } : undefined}
               className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/20 rounded-xl"
             >
@@ -239,7 +239,7 @@ export default function ContactPage() {
           {/* Right column - Form */}
           <motion.div
             initial={shouldAnimate ? { opacity: 0, x: 40 } : false}
-            animate={shouldAnimate ? { opacity: 1, x: 0 } : undefined}
+            animate={{ opacity: 1, x: 0 }}
             transition={shouldAnimate ? { duration: 0.6 } : undefined}
             className="relative"
           >
@@ -251,13 +251,13 @@ export default function ContactPage() {
                   <motion.div
                     key="success"
                     initial={shouldAnimate ? { opacity: 0, scale: 0.8 } : false}
-                    animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={shouldAnimate ? { opacity: 0, scale: 0.8 } : undefined}
                     className="text-center py-12"
                   >
                     <motion.div
                       initial={shouldAnimate ? { scale: 0 } : false}
-                      animate={shouldAnimate ? { scale: 1 } : undefined}
+                      animate={{ scale: 1 }}
                       transition={
                         shouldAnimate
                           ? { type: "spring", stiffness: 200, damping: 10 }
@@ -277,7 +277,7 @@ export default function ContactPage() {
                     key="form"
                     onSubmit={handleSubmit}
                     initial={shouldAnimate ? { opacity: 0 } : false}
-                    animate={shouldAnimate ? { opacity: 1 } : undefined}
+                    animate={{ opacity: 1 }}
                     exit={shouldAnimate ? { opacity: 0 } : undefined}
                     className="space-y-6"
                     autoComplete="off"
