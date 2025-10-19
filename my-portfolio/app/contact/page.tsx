@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { FiMail, FiPhone, FiMapPin, FiSend } from "react-icons/fi";
 import { FaLinkedin, FaGithub, FaTwitter, FaCheckCircle } from "react-icons/fa";
 
@@ -33,6 +33,7 @@ export default function ContactPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const resetTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     return () => {
@@ -164,9 +165,9 @@ export default function ContactPage() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
           {/* Left column - Info */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
             className="space-y-8"
           >
             {/* Header */}
@@ -197,13 +198,19 @@ export default function ContactPage() {
                 <motion.a
                   key={method.label}
                   href={method.href}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.08, duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                  transition={{
+                    delay: prefersReducedMotion ? 0 : index * 0.06,
+                    duration: prefersReducedMotion ? 0.2 : 0.32,
+                    ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                  }}
                   whileHover={{
-                    x: 8,
-                    scale: 1.02,
-                    transition: { duration: 0.12, ease: "easeOut" },
+                    x: prefersReducedMotion ? 4 : 8,
+                    scale: prefersReducedMotion ? 1 : 1.02,
+                    transition: prefersReducedMotion
+                      ? { duration: 0.1 }
+                      : { duration: 0.12, ease: "easeOut" },
                   }}
                   className="flex items-center gap-4 p-4 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-xl hover:border-purple-500/50 transition-colors group"
                 >
@@ -228,13 +235,19 @@ export default function ContactPage() {
                   <motion.a
                     key={social.name}
                     href={social.url}
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.85 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 + index * 0.05, duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    transition={{
+                      delay: prefersReducedMotion ? 0 : 0.25 + index * 0.04,
+                      duration: prefersReducedMotion ? 0.18 : 0.28,
+                      ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                    }}
                     whileHover={{
-                      scale: 1.06,
-                      y: -4,
-                      transition: { duration: 0.12, ease: "easeOut" },
+                      scale: prefersReducedMotion ? 1.02 : 1.06,
+                      y: prefersReducedMotion ? -2 : -4,
+                      transition: prefersReducedMotion
+                        ? { duration: 0.1 }
+                        : { duration: 0.12, ease: "easeOut" },
                     }}
                     whileTap={{ scale: 0.97 }}
                     className="w-12 h-12 bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl flex items-center justify-center text-purple-300 hover:border-purple-500/50 transition-all"
@@ -264,9 +277,9 @@ export default function ContactPage() {
 
           {/* Right column - Form */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
             className="relative"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-violet-600/20 rounded-3xl blur-2xl" />
@@ -298,7 +311,7 @@ export default function ContactPage() {
                   <motion.form
                     key="form"
                     onSubmit={handleSubmit}
-                    initial={{ opacity: 0 }}
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="space-y-6"

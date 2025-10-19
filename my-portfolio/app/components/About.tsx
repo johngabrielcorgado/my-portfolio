@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useMemo } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { FiPenTool, FiServer, FiSmartphone, FiZap } from "react-icons/fi";
 
@@ -29,6 +29,17 @@ const capabilities = [
 ];
 
 export default function About() {
+  const prefersReducedMotion = useReducedMotion();
+  const revealTransition = useMemo(
+    () =>
+      prefersReducedMotion
+        ? { duration: 0.18, ease: "linear" as const }
+        : { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
+    [prefersReducedMotion]
+  );
+  const hoverTransition = prefersReducedMotion
+    ? { duration: 0.1, ease: "linear" as const }
+    : { duration: 0.12, ease: "easeOut" as const };
   return (
     <section id="about" className="relative py-24 md:py-32 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 overflow-hidden">
       {/* Background effects */}
@@ -62,10 +73,10 @@ export default function About() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8">
         {/* Section header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
           className="text-center mb-16"
         >
           <motion.span
@@ -93,10 +104,10 @@ export default function About() {
         <div className="grid gap-10 md:grid-cols-2 md:gap-12 mb-16 md:mb-20">
           {/* Left column - Skills */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
             className="space-y-8"
           >
             <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-6 sm:p-8">
@@ -111,10 +122,13 @@ export default function About() {
                 {skills.map((skill, index) => (
                   <motion.div
                     key={skill.title}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={prefersReducedMotion ? false : { opacity: 0, x: -18 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{
+                      delay: prefersReducedMotion ? 0 : index * 0.08,
+                      ...revealTransition,
+                    }}
                   >
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-slate-300 font-medium">{skill.title}</span>
@@ -125,7 +139,11 @@ export default function About() {
                         initial={{ width: 0 }}
                         whileInView={{ width: `${skill.percentage}%` }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.3, duration: 1, ease: "easeOut" }}
+                        transition={{
+                          delay: prefersReducedMotion ? 0 : index * 0.08 + 0.2,
+                          duration: prefersReducedMotion ? 0.45 : 1,
+                          ease: "easeOut",
+                        }}
                         className={`h-full bg-gradient-to-r ${skill.color} rounded-full relative`}
                       >
                         <div className="absolute inset-0 bg-white/20 animate-pulse" />
@@ -144,14 +162,18 @@ export default function About() {
               ].map((stat, index) => (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 + 0.3, duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{
+                    delay: prefersReducedMotion ? 0 : index * 0.08 + 0.2,
+                    duration: prefersReducedMotion ? 0.2 : 0.4,
+                    ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                  }}
                   whileHover={{
-                    y: -6,
-                    scale: 1.02,
-                    transition: { duration: 0.12, ease: "easeOut" },
+                    y: prefersReducedMotion ? -2 : -6,
+                    scale: prefersReducedMotion ? 1.01 : 1.02,
+                    transition: hoverTransition,
                   }}
                   className="bg-gradient-to-br from-purple-900/30 to-violet-900/30 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 text-center"
                 >
@@ -166,10 +188,10 @@ export default function About() {
 
           {/* Right column - About text and features */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
             className="space-y-6"
           >
             <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-2xl p-6 sm:p-8">
@@ -196,11 +218,15 @@ export default function About() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.08, duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                  transition={{
+                    delay: prefersReducedMotion ? 0 : index * 0.06,
+                    duration: prefersReducedMotion ? 0.2 : 0.3,
+                    ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                  }}
                   whileHover={{
-                    y: -6,
-                    scale: 1.03,
-                    transition: { duration: 0.12, ease: "easeOut" },
+                    y: prefersReducedMotion ? -3 : -6,
+                    scale: prefersReducedMotion ? 1.01 : 1.03,
+                    transition: hoverTransition,
                   }}
                   className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4 sm:p-5 text-center"
                 >
@@ -234,11 +260,19 @@ export default function About() {
             {techStack.map((tech, index) => (
               <motion.div
                 key={tech.name}
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.85, y: 18 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05, duration: 0.4 }}
-                whileHover={{ y: -8, scale: 1.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  delay: prefersReducedMotion ? 0 : index * 0.04,
+                  duration: prefersReducedMotion ? 0.18 : 0.32,
+                  ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                }}
+                whileHover={{
+                  y: prefersReducedMotion ? -4 : -8,
+                  scale: prefersReducedMotion ? 1.02 : 1.08,
+                  transition: hoverTransition,
+                }}
                 className="group relative"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-violet-600 rounded-xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300" />

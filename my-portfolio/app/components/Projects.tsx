@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 
 type Project = {
@@ -46,6 +46,13 @@ const personalProjects: Project[] = [
 ];
 
 export default function Projects() {
+  const prefersReducedMotion = useReducedMotion();
+  const cardTransition = prefersReducedMotion
+    ? { duration: 0.18, ease: "linear" as const }
+    : { duration: 0.35, ease: [0.4, 0, 0.2, 1] as const };
+  const hoverTransition = prefersReducedMotion
+    ? { duration: 0.1, ease: "linear" as const }
+    : { duration: 0.12, ease: "easeOut" as const };
   return (
     <section id="projects" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
       {/* Background effects */}
@@ -127,18 +134,21 @@ export default function Projects() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      initial={{ opacity: 0, y: 30 }}
+                      initial={prefersReducedMotion ? false : { opacity: 0, y: 26 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.08, duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{
+                        delay: prefersReducedMotion ? 0 : index * 0.06,
+                        ...cardTransition,
+                      }}
                       whileHover={{
-                        y: -6,
-                        scale: 1.01,
-                        transition: { duration: 0.12, ease: "easeOut" },
+                        y: prefersReducedMotion ? -2 : -6,
+                        scale: prefersReducedMotion ? 1 : 1.01,
+                        transition: hoverTransition,
                       }}
                       className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                     >
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
                       <div className="relative p-6 md:p-8">
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
                           <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
@@ -158,7 +168,7 @@ export default function Projects() {
                               initial={{ opacity: 0, y: 10 }}
                               whileInView={{ opacity: 1, y: 0 }}
                               viewport={{ once: true }}
-                              transition={{ duration: 0.3 }}
+                              transition={{ duration: prefersReducedMotion ? 0.2 : 0.3 }}
                               className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
                             >
                               {project.status}
@@ -170,7 +180,11 @@ export default function Projects() {
                               initial={{ opacity: 0, scale: 0.9 }}
                               whileInView={{ opacity: 1, scale: 1 }}
                               viewport={{ once: true }}
-                              transition={{ delay: i * 0.04, duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                              transition={{
+                                delay: prefersReducedMotion ? 0 : i * 0.03,
+                                duration: prefersReducedMotion ? 0.18 : 0.22,
+                                ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                              }}
                               className="px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300"
                             >
                               {tag}
