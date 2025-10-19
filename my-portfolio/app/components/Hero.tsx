@@ -10,10 +10,9 @@ export default function Hero() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || isMobile) return;
 
     const handleMouseMove = (e: { clientX: number; clientY: number }) => {
-      if (window.innerWidth <= 1024) return;
       setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
         y: (e.clientY / window.innerHeight - 0.5) * 20,
@@ -21,7 +20,7 @@ export default function Hero() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, isMobile]);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
@@ -44,7 +43,7 @@ export default function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           animate={{
-            scale: [1, prefersReducedMotion || isMobile ? 1.05 : 1.2, 1],
+            scale: [1, prefersReducedMotion || isMobile ? 1 : 1.2, 1],
             rotate: [0, 90, 0],
           }}
           transition={{
@@ -56,7 +55,7 @@ export default function Hero() {
         />
         <motion.div
           animate={{
-            scale: [prefersReducedMotion || isMobile ? 1.05 : 1.2, 1, prefersReducedMotion || isMobile ? 1.05 : 1.2],
+            scale: [prefersReducedMotion || isMobile ? 1 : 1.2, 1, prefersReducedMotion || isMobile ? 1 : 1.2],
             rotate: [90, 0, 90],
           }}
           transition={{
@@ -77,9 +76,9 @@ export default function Hero() {
           className="flex-1 max-w-2xl w-full text-center md:text-left"
         >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={prefersReducedMotion || isMobile ? undefined : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            transition={{ delay: 0.2, duration: prefersReducedMotion ? 0.3 : 0.6 }}
             className="inline-block mb-4 px-4 py-2 bg-purple-500/10 backdrop-blur-sm border border-purple-500/20 rounded-full"
           >
             <span className="text-purple-300 text-sm font-medium">My Portfolio</span>

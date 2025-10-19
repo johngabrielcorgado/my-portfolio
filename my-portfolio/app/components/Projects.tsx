@@ -176,15 +176,18 @@ export default function Projects() {
                       target="_blank"
                       rel="noopener noreferrer"
                       initial={prefersReducedMotion ? false : { opacity: 0, y: 26 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.2 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{
-                        delay: prefersReducedMotion ? 0 : index * 0.06,
-                        ...cardTransition,
+                        delay: prefersReducedMotion ? 0 : isMobile ? 0 : index * 0.06,
+                        ...(prefersReducedMotion
+                          ? { duration: 0.2, ease: "linear" as const }
+                          : isMobile
+                          ? { duration: 0.2, ease: "easeOut" as const }
+                          : cardTransition),
                       }}
                       whileHover={{
-                        y: prefersReducedMotion ? -2 : isMobile ? -3 : -6,
-                        scale: prefersReducedMotion ? 1 : isMobile ? 1.005 : 1.01,
+                        y: prefersReducedMotion ? -2 : isMobile ? 0 : -6,
+                        scale: prefersReducedMotion ? 1 : isMobile ? 1 : 1.01,
                         transition: hoverTransition,
                       }}
                       className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
