@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { useCallback, useMemo, useRef } from "react";
+import { motion, useInView, useReducedMotion, type Transition } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 import useIsMobile from "../hooks/use-is-mobile";
 
@@ -50,43 +50,43 @@ const personalProjects: Project[] = [
 export default function Projects() {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
-  const shouldAnimate = !prefersReducedMotion && !isMobile;
-  const shouldAnimateBackground = shouldAnimate;
+  const isAnimatedDesktop = !prefersReducedMotion && !isMobile;
   const revealSpring = useMemo(
     () => ({
       type: "spring" as const,
-      stiffness: isMobile ? 240 : 280,
-      damping: isMobile ? 32 : 26,
+      stiffness: 280,
+      damping: 26,
       mass: 0.8,
     }),
-    [isMobile]
+    []
   );
   const getCardTransition = useCallback(
-    (index: number) =>
-      shouldAnimate
+    (index: number): Transition =>
+      isAnimatedDesktop
         ? {
             ...revealSpring,
-            delay: index * (isMobile ? 0.035 : 0.06),
+            delay: index * 0.06,
           }
-        : { duration: 0.18, ease: "linear" as const },
-    [shouldAnimate, revealSpring, isMobile]
+        : { duration: 0.28, ease: "easeOut" as const },
+    [isAnimatedDesktop, revealSpring]
   );
   const hoverMotion = useMemo(() => {
-    if (!shouldAnimate) return undefined;
+    if (!isAnimatedDesktop) return undefined;
     return {
       y: -6,
       scale: 1.02,
       transition: { duration: 0.12, ease: "easeOut" as const },
     };
-  }, [shouldAnimate]);
+  }, [isAnimatedDesktop]);
   const projectInitial = useMemo(() => {
-    if (!shouldAnimate) return false;
-    return { opacity: 0, y: isMobile ? 10 : 16, filter: "blur(3px)" };
-  }, [shouldAnimate, isMobile]);
+    if (!isAnimatedDesktop) return false;
+    return { opacity: 0, y: 16 };
+  }, [isAnimatedDesktop]);
   const projectReveal = useMemo(
-    () => (shouldAnimate ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }),
-    [shouldAnimate]
+    () => (isAnimatedDesktop ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }),
+    [isAnimatedDesktop]
   );
+  const shouldAnimateBackground = isAnimatedDesktop;
 
   return (
     <section id="projects" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
@@ -159,71 +159,18 @@ export default function Projects() {
 
                 <div className="space-y-6">
                   {section.items.map((project, index) => (
-                    <motion.a
+                    <ProjectCard
                       key={project.id}
-                      href={project.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      initial={projectInitial}
-                      whileInView={shouldAnimate ? projectReveal : undefined}
-                      animate={shouldAnimate ? undefined : projectReveal}
-                      viewport={{ once: true, amount: 0.25, margin: "-10% 0px -10% 0px" }}
-                      transition={getCardTransition(index)}
-                      whileHover={hoverMotion}
-                      className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                    >
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-                      <div className="relative p-6 md:p-8">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
-                          <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
-                          <div className="inline-flex items-center gap-2 text-purple-400 font-medium">
-                            Visit Site
-                            <FiArrowUpRight className="text-lg" aria-hidden />
-                          </div>
-                        </div>
-
-                        <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
-                          {project.description}
-                        </p>
-
-                        <div className="flex flex-wrap gap-2 items-center">
-                          {project.status && (
-                            <motion.span
-                              initial={{ opacity: 0, y: 10 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={
-                                shouldAnimate
-                                  ? { ...revealSpring, delay: 0.08 }
-                                  : { duration: 0.18, ease: "linear" as const }
-                              }
-                              className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
-                            >
-                              {project.status}
-                            </motion.span>
-                          )}
-                          {project.tags.map((tag, i) => (
-                            <motion.span
-                              key={tag}
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              whileInView={{ opacity: 1, scale: 1 }}
-                              viewport={{ once: true }}
-                              transition={
-                                shouldAnimate
-                                  ? {
-                                      ...revealSpring,
-                                      delay: i * (isMobile ? 0.025 : 0.02),
-                                    }
-                                  : { duration: 0.18, ease: "linear" as const }
-                              }
-                              className="px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300"
-                            >
-                              {tag}
-                            </motion.span>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.a>
+                      project={project}
+                      index={index}
+                      isAnimatedDesktop={isAnimatedDesktop}
+                      prefersReducedMotion={prefersReducedMotion}
+                      projectInitial={projectInitial}
+                      projectReveal={projectReveal}
+                      getCardTransition={getCardTransition}
+                      hoverMotion={hoverMotion}
+                      revealSpring={revealSpring}
+                    />
                   ))}
                 </div>
               </div>
@@ -276,5 +223,172 @@ export default function Projects() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+type ProjectCardProps = {
+  project: Project;
+  index: number;
+  isAnimatedDesktop: boolean;
+  prefersReducedMotion: boolean;
+  projectInitial: unknown;
+  projectReveal: unknown;
+  getCardTransition: (index: number) => Transition;
+  hoverMotion: Record<string, unknown> | undefined;
+  revealSpring: Transition;
+};
+
+function ProjectCard({
+  project,
+  index,
+  isAnimatedDesktop,
+  prefersReducedMotion,
+  projectInitial,
+  projectReveal,
+  getCardTransition,
+  hoverMotion,
+  revealSpring,
+}: ProjectCardProps) {
+  if (isAnimatedDesktop) {
+    return (
+      <motion.a
+        href={project.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={projectInitial}
+        whileInView={projectReveal}
+        viewport={{ once: true, amount: 0.25, margin: "-10% 0px -10% 0px" }}
+        transition={getCardTransition(index)}
+        whileHover={hoverMotion}
+        className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        <DesktopCardContent project={project} revealSpring={revealSpring} />
+      </motion.a>
+    );
+  }
+
+  return (
+    <MobileProjectCard
+      project={project}
+      index={index}
+      prefersReducedMotion={prefersReducedMotion}
+    />
+  );
+}
+
+function DesktopCardContent({
+  project,
+  revealSpring,
+}: {
+  project: Project;
+  revealSpring: Transition;
+}) {
+  return (
+    <div className="relative p-6 md:p-8">
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
+        <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
+        <div className="inline-flex items-center gap-2 text-purple-400 font-medium">
+          Visit Site
+          <FiArrowUpRight className="text-lg" aria-hidden />
+        </div>
+      </div>
+
+      <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
+        {project.description}
+      </p>
+
+      <div className="flex flex-wrap gap-2 items-center">
+        {project.status && (
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ ...revealSpring, delay: 0.08 }}
+            className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
+          >
+            {project.status}
+          </motion.span>
+        )}
+        {project.tags.map((tag, i) => (
+          <motion.span
+            key={tag}
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ ...revealSpring, delay: 0.12 + i * 0.04 }}
+            className="px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300"
+          >
+            {tag}
+          </motion.span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileProjectCard({
+  project,
+  index,
+  prefersReducedMotion,
+}: {
+  project: Project;
+  index: number;
+  prefersReducedMotion: boolean;
+}) {
+  const ref = useRef<HTMLAnchorElement | null>(null);
+  const isInView = useInView(ref, { once: true, margin: "-10% 0px -10% 0px" });
+  const animate = !prefersReducedMotion;
+  const visibilityClass = animate
+    ? isInView
+      ? "opacity-100 translate-y-0"
+      : "opacity-0 translate-y-4"
+    : "";
+  const cardDelay = animate ? { transitionDelay: `${index * 60}ms` } : undefined;
+
+  return (
+    <a
+      ref={ref}
+      href={project.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-purple-500/50 transform-gpu transition-all duration-300 ease-out ${visibilityClass}`}
+      style={cardDelay}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      <div className="relative p-6 md:p-8">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
+          <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
+          <div className="inline-flex items-center gap-2 text-purple-400 font-medium">
+            Visit Site
+            <FiArrowUpRight className="text-lg" aria-hidden />
+          </div>
+        </div>
+
+        <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
+          {project.description}
+        </p>
+
+        <div className="flex flex-wrap gap-2 items-center">
+          {project.status && (
+            <span
+              className={`px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
+              style={animate ? { transitionDelay: `${80 + index * 40}ms` } : undefined}
+            >
+              {project.status}
+            </span>
+          )}
+          {project.tags.map((tag, i) => (
+            <span
+              key={tag}
+              className={`px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
+              style={animate ? { transitionDelay: `${120 + index * 40 + i * 30}ms` } : undefined}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </a>
   );
 }
