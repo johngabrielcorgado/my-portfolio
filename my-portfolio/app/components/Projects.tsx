@@ -14,6 +14,8 @@ type Project = {
   status?: string;
 };
 
+const SMOOTH_EASE = [0.16, 1, 0.3, 1] as const;
+
 const clientProjects: Project[] = [
   {
     id: 2,
@@ -55,8 +57,8 @@ export default function Projects() {
       prefersReducedMotion
         ? { duration: 0.18, ease: "linear" as const }
         : {
-            duration: isMobile ? 0.28 : 0.35,
-            ease: [0.4, 0, 0.2, 1] as const,
+            duration: isMobile ? 0.42 : 0.35,
+            ease: isMobile ? SMOOTH_EASE : ([0.4, 0, 0.2, 1] as const),
           },
     [prefersReducedMotion, isMobile]
   );
@@ -65,11 +67,16 @@ export default function Projects() {
       prefersReducedMotion
         ? { duration: 0.1, ease: "linear" as const }
         : {
-            duration: isMobile ? 0.1 : 0.12,
+            duration: isMobile ? 0.14 : 0.12,
             ease: "easeOut" as const,
           },
     [prefersReducedMotion, isMobile]
   );
+  const projectInitial = useMemo(() => {
+    if (prefersReducedMotion) return false;
+    return { opacity: 0, y: isMobile ? 18 : 26 };
+  }, [prefersReducedMotion, isMobile]);
+
   return (
     <section id="projects" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
       {/* Background effects */}
@@ -151,14 +158,14 @@ export default function Projects() {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      initial={prefersReducedMotion ? false : { opacity: 0, y: 26 }}
+                      initial={projectInitial}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{
-                        delay: prefersReducedMotion ? 0 : isMobile ? 0 : index * 0.06,
+                        delay: prefersReducedMotion ? 0 : isMobile ? index * 0.04 : index * 0.06,
                         ...(prefersReducedMotion
                           ? { duration: 0.2, ease: "linear" as const }
                           : isMobile
-                          ? { duration: 0.2, ease: "easeOut" as const }
+                          ? { duration: 0.45, ease: SMOOTH_EASE }
                           : cardTransition),
                       }}
                       whileHover={{
@@ -189,8 +196,8 @@ export default function Projects() {
                               whileInView={{ opacity: 1, y: 0 }}
                               viewport={{ once: true }}
                               transition={{
-                                duration: prefersReducedMotion ? 0.18 : isMobile ? 0.24 : 0.3,
-                                ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                                duration: prefersReducedMotion ? 0.18 : isMobile ? 0.32 : 0.3,
+                                ease: prefersReducedMotion ? "linear" : SMOOTH_EASE,
                               }}
                               className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
                             >
@@ -204,9 +211,9 @@ export default function Projects() {
                               whileInView={{ opacity: 1, scale: 1 }}
                               viewport={{ once: true }}
                               transition={{
-                                delay: prefersReducedMotion ? 0 : i * 0.03,
-                                duration: prefersReducedMotion ? 0.18 : 0.22,
-                                ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
+                                delay: prefersReducedMotion ? 0 : i * (isMobile ? 0.04 : 0.03),
+                                duration: prefersReducedMotion ? 0.18 : isMobile ? 0.27 : 0.22,
+                                ease: prefersReducedMotion ? "linear" : SMOOTH_EASE,
                               }}
                               className="px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300"
                             >
