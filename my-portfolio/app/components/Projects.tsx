@@ -1,7 +1,14 @@
 "use client";
 
 import { useCallback, useMemo, useRef } from "react";
-import { motion, useInView, useReducedMotion, type Transition } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  type Transition,
+  type TargetAndTransition,
+  type VariantLabels,
+} from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 import useIsMobile from "../hooks/use-is-mobile";
 
@@ -164,7 +171,7 @@ export default function Projects() {
                       project={project}
                       index={index}
                       isAnimatedDesktop={isAnimatedDesktop}
-                      prefersReducedMotion={prefersReducedMotion}
+                      prefersReducedMotion={Boolean(prefersReducedMotion)}
                       projectInitial={projectInitial}
                       projectReveal={projectReveal}
                       getCardTransition={getCardTransition}
@@ -231,10 +238,10 @@ type ProjectCardProps = {
   index: number;
   isAnimatedDesktop: boolean;
   prefersReducedMotion: boolean;
-  projectInitial: unknown;
-  projectReveal: unknown;
+  projectInitial: false | TargetAndTransition;
+  projectReveal: TargetAndTransition;
   getCardTransition: (index: number) => Transition;
-  hoverMotion: Record<string, unknown> | undefined;
+  hoverMotion: TargetAndTransition | VariantLabels | undefined;
   revealSpring: Transition;
 };
 
