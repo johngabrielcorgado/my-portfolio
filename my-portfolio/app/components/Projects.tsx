@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
 import useIsMobile from "../hooks/use-is-mobile";
@@ -13,8 +13,6 @@ type Project = {
   link: string;
   status?: string;
 };
-
-const SMOOTH_EASE = [0.16, 1, 0.3, 1] as const;
 
 const clientProjects: Project[] = [
   {
@@ -52,59 +50,67 @@ const personalProjects: Project[] = [
 export default function Projects() {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
-  const cardTransition = useMemo(
-    () =>
-      prefersReducedMotion
-        ? { duration: 0.18, ease: "linear" as const }
-        : {
-            duration: isMobile ? 0.42 : 0.35,
-            ease: isMobile ? SMOOTH_EASE : ([0.4, 0, 0.2, 1] as const),
-          },
-    [prefersReducedMotion, isMobile]
+  const shouldAnimate = !prefersReducedMotion;
+  const shouldAnimateBackground = shouldAnimate && !isMobile;
+  const revealSpring = useMemo(
+    () => ({
+      type: "spring" as const,
+      stiffness: isMobile ? 240 : 280,
+      damping: isMobile ? 32 : 26,
+      mass: 0.8,
+    }),
+    [isMobile]
   );
-  const hoverTransition = useMemo(
-    () =>
-      prefersReducedMotion
-        ? { duration: 0.1, ease: "linear" as const }
-        : {
-            duration: isMobile ? 0.14 : 0.12,
-            ease: "easeOut" as const,
-          },
-    [prefersReducedMotion, isMobile]
+  const getCardTransition = useCallback(
+    (index: number) =>
+      shouldAnimate
+        ? {
+            ...revealSpring,
+            delay: index * (isMobile ? 0.035 : 0.06),
+          }
+        : { duration: 0.18, ease: "linear" as const },
+    [shouldAnimate, revealSpring, isMobile]
   );
+  const hoverMotion = useMemo(() => {
+    if (!shouldAnimate) return undefined;
+    return {
+      y: isMobile ? -2 : -6,
+      scale: isMobile ? 1.01 : 1.02,
+      transition: { duration: isMobile ? 0.14 : 0.12, ease: "easeOut" as const },
+    };
+  }, [shouldAnimate, isMobile]);
   const projectInitial = useMemo(() => {
-    if (prefersReducedMotion) return false;
-    return { opacity: 0, y: isMobile ? 18 : 26 };
-  }, [prefersReducedMotion, isMobile]);
+    if (!shouldAnimate) return false;
+    return { opacity: 0, y: isMobile ? 10 : 16, filter: "blur(3px)" };
+  }, [shouldAnimate, isMobile]);
+  const projectReveal = useMemo(
+    () => (shouldAnimate ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }),
+    [shouldAnimate]
+  );
 
   return (
     <section id="projects" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0">
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            rotate: [0, 180, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1.3, 1, 1.3],
-            rotate: [180, 0, 180],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl"
-        />
+        {shouldAnimateBackground ? (
+          <>
+            <motion.div
+              animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 0] }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{ scale: [1.3, 1, 1.3], rotate: [180, 0, 180] }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl"
+            />
+          </>
+        ) : (
+          <>
+            <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-violet-600/10 rounded-full blur-3xl" />
+          </>
+        )}
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8">
@@ -159,20 +165,11 @@ export default function Projects() {
                       target="_blank"
                       rel="noopener noreferrer"
                       initial={projectInitial}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: prefersReducedMotion ? 0 : isMobile ? index * 0.04 : index * 0.06,
-                        ...(prefersReducedMotion
-                          ? { duration: 0.2, ease: "linear" as const }
-                          : isMobile
-                          ? { duration: 0.45, ease: SMOOTH_EASE }
-                          : cardTransition),
-                      }}
-                      whileHover={{
-                        y: prefersReducedMotion ? -2 : isMobile ? 0 : -6,
-                        scale: prefersReducedMotion ? 1 : isMobile ? 1 : 1.01,
-                        transition: hoverTransition,
-                      }}
+                      whileInView={shouldAnimate ? projectReveal : undefined}
+                      animate={shouldAnimate ? undefined : projectReveal}
+                      viewport={{ once: true, amount: 0.25, margin: "-10% 0px -10% 0px" }}
+                      transition={getCardTransition(index)}
+                      whileHover={hoverMotion}
                       className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                     >
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
@@ -195,10 +192,11 @@ export default function Projects() {
                               initial={{ opacity: 0, y: 10 }}
                               whileInView={{ opacity: 1, y: 0 }}
                               viewport={{ once: true }}
-                              transition={{
-                                duration: prefersReducedMotion ? 0.18 : isMobile ? 0.32 : 0.3,
-                                ease: prefersReducedMotion ? "linear" : SMOOTH_EASE,
-                              }}
+                              transition={
+                                shouldAnimate
+                                  ? { ...revealSpring, delay: 0.08 }
+                                  : { duration: 0.18, ease: "linear" as const }
+                              }
                               className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
                             >
                               {project.status}
@@ -210,11 +208,14 @@ export default function Projects() {
                               initial={{ opacity: 0, scale: 0.9 }}
                               whileInView={{ opacity: 1, scale: 1 }}
                               viewport={{ once: true }}
-                              transition={{
-                                delay: prefersReducedMotion ? 0 : i * (isMobile ? 0.04 : 0.03),
-                                duration: prefersReducedMotion ? 0.18 : isMobile ? 0.27 : 0.22,
-                                ease: prefersReducedMotion ? "linear" : SMOOTH_EASE,
-                              }}
+                              transition={
+                                shouldAnimate
+                                  ? {
+                                      ...revealSpring,
+                                      delay: i * (isMobile ? 0.025 : 0.02),
+                                    }
+                                  : { duration: 0.18, ease: "linear" as const }
+                              }
                               className="px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300"
                             >
                               {tag}
