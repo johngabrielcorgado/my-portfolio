@@ -150,7 +150,7 @@ export default function Projects() {
         </motion.div>
 
         {/* Projects by category */}
-        <div className="space-y-12 sm:space-y-16">
+        <div className="space-y-10 sm:space-y-16">
           {[{ title: "Client Work", items: clientProjects }, { title: "Personal Projects", items: personalProjects }].map(
             (section) => (
               <div key={section.title} className="space-y-8">
@@ -164,7 +164,7 @@ export default function Projects() {
                   {section.title}
                 </motion.h3>
 
-                <div className="space-y-6">
+                <div className="space-y-6 sm:space-y-8">
                   {section.items.map((project, index) => (
                     <ProjectCard
                       key={project.id}
@@ -363,23 +363,25 @@ function MobileProjectCard({
       style={cardDelay}
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-      <div className="relative p-6 md:p-8">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
-          <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
-          <div className="inline-flex items-center gap-2 text-purple-400 font-medium">
-            Visit Site
-            <FiArrowUpRight className="text-lg" aria-hidden />
+      <div className="relative p-5 sm:p-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <h4 className="text-lg font-semibold text-white">{project.title}</h4>
+            <div className="inline-flex items-center gap-2 text-purple-300 text-sm font-medium">
+              Visit
+              <FiArrowUpRight className="text-base" aria-hidden />
+            </div>
           </div>
+
+          <p className="text-slate-400 text-sm leading-relaxed">
+            {project.description}
+          </p>
         </div>
 
-        <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
-          {project.description}
-        </p>
-
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="mt-5 flex flex-wrap gap-2">
           {project.status && (
             <span
-              className={`px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
+              className={`px-2.5 py-1 rounded-full bg-purple-600/20 border border-purple-500/30 text-[11px] uppercase tracking-wide text-purple-300/90 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
               style={animate ? { transitionDelay: `${80 + index * 40}ms` } : undefined}
             >
               {project.status}
@@ -388,7 +390,7 @@ function MobileProjectCard({
           {project.tags.map((tag, i) => (
             <span
               key={tag}
-              className={`px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
+              className={`px-2.5 py-1 rounded-full bg-slate-800/90 border border-slate-700/50 text-[11px] text-slate-300 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
               style={animate ? { transitionDelay: `${120 + index * 40 + i * 30}ms` } : undefined}
             >
               {tag}
