@@ -50,8 +50,8 @@ const personalProjects: Project[] = [
 export default function Projects() {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
-  const shouldAnimate = !prefersReducedMotion;
-  const shouldAnimateBackground = shouldAnimate && !isMobile;
+  const shouldAnimate = !prefersReducedMotion && !isMobile;
+  const shouldAnimateBackground = shouldAnimate;
   const revealSpring = useMemo(
     () => ({
       type: "spring" as const,
@@ -74,11 +74,11 @@ export default function Projects() {
   const hoverMotion = useMemo(() => {
     if (!shouldAnimate) return undefined;
     return {
-      y: isMobile ? -2 : -6,
-      scale: isMobile ? 1.01 : 1.02,
-      transition: { duration: isMobile ? 0.14 : 0.12, ease: "easeOut" as const },
+      y: -6,
+      scale: 1.02,
+      transition: { duration: 0.12, ease: "easeOut" as const },
     };
-  }, [shouldAnimate, isMobile]);
+  }, [shouldAnimate]);
   const projectInitial = useMemo(() => {
     if (!shouldAnimate) return false;
     return { opacity: 0, y: isMobile ? 10 : 16, filter: "blur(3px)" };
