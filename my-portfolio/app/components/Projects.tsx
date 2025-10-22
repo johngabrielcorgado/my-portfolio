@@ -48,7 +48,7 @@ const personalProjects: Project[] = [
     title: "Vaultxd",
     description:
       "This is a personal project I’ve been developing for months — a music review platform inspired by Letterboxd, built with Next.js, Firebase, and Tailwind CSS. Designed to push my skills further and combine my passion for music and web development, the platform is set to launch in early 2026.",
-    tags: ["Next.js", "Firebase", "API Integration", "Tailwind CSS", "Framer Motion"],
+    tags: ["Vue.js", "Supabase", "Tailwind CSS", "Framer Motion", "ShadCN UI", "API Integration"],
     link: "https://vaultxd.com",
     status: "In progress",
   },
