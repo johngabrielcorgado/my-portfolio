@@ -7,15 +7,14 @@ import useIsMobile from "../hooks/use-is-mobile";
 
 const techStack = [
   { name: "Next.js", category: "Frontend" },
-  { name: "React", category: "Frontend"},
   { name: "Vue.js", category: "Frontend" },
   { name: "Vite.js", category: "Build Tool"},
+  { name: "Firebase", category: "Backend"},
+  { name: "Supabase", category: "Backend"},
   { name: "Express.js", category: "Backend"},
   { name: "Node.js", category: "Backend" },
   { name: "MongoDB", category: "Database"},
   { name: "SQL", category: "Database"},
-  { name: "Firebase", category: "Backend"},
-  { name: "Supabase", category: "Backend"},
 ];
 
 const skills = [
