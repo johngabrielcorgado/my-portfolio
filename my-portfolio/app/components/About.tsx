@@ -15,6 +15,7 @@ const techStack = [
   { name: "MongoDB", category: "Database"},
   { name: "SQL", category: "Database"},
   { name: "Firebase", category: "Backend"},
+  { name: "Supabase", category: "Backend"},
 ];
 
 const skills = [
