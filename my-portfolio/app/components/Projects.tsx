@@ -47,8 +47,8 @@ const personalProjects: Project[] = [
     id: 3,
     title: "Vaultxd",
     description:
-      "This is a personal project I’ve been developing for months — a music review platform inspired by Letterboxd, built with Vue.js, Supabase, and Tailwind CSS. Designed to push my skills further and combine my passion for music and web development, the platform is set to launch in early 2026.",
-    tags: ["Vue.js", "Supabase", "Tailwind CSS", "Framer Motion", "ShadCN UI", "API Integration"],
+      "This is a personal project I’ve been developing for the past month — a music review platform inspired by Letterboxd, built with Vue.js, Supabase, and Tailwind CSS. Designed to push my skills further and combine my passion for music and web development, the platform is set to launch on December 2025.",
+    tags: ["Svelte", "Supabase", "Tailwind CSS", "Framer Motion", "RESTful API"],
     link: "https://vaultxd.com",
     status: "In progress",
   },
