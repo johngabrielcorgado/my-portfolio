@@ -27,7 +27,7 @@ const clientProjects: Project[] = [
     title: "Hills & Forest Information Technology Corporation",
     description:
       "A modern venture capital firm website built using Next.js for the frontend, powered by Firebase for database management and authentication. Styled with Tailwind CSS and enhanced by Framer Motion, it delivers a sleek, responsive design with fluid animations. The site includes a custom CMS dashboard for the admin and a blog system optimized for SEO.",
-    tags: ["Next.js", "Firebase", "Tailwind", "Framer Motion"],
+    tags: ["Next.js", "Firebase", "Tailwind", "Framer Motion", "Codex"],
     link: "https://hillsandforestcorp.com",
     status: "Currently maintaining",
   },
@@ -36,7 +36,7 @@ const clientProjects: Project[] = [
     title: "KMJ Consultancy Inc.",
     description:
       "A modern consultancy firm website built using Next.js for the frontend, powered by Firebase for database management and authentication. Styled with Tailwind CSS and enhanced by Framer Motion, it delivers a sleek, responsive design with fluid animations. The site includes a custom CMS dashboard for the admin and a blog system optimized for SEO.",
-    tags: ["Next.js", "Firebase", "Tailwind CSS", "Framer Motion"],
+    tags: ["Next.js", "Firebase", "Tailwind CSS", "Framer Motion", "Codex"],
     link: "https://kmjconsultancyinc.com",
     status: "Currently maintaining",
   },
@@ -47,10 +47,10 @@ const personalProjects: Project[] = [
     id: 3,
     title: "Vaultxd",
     description:
-      "This is a personal project I’ve been developing for the past month — a music review platform inspired by Letterboxd, built with Svelte, Supabase, and Tailwind CSS. Designed to push my skills further and combine my passion for music and web development, the platform is set to launch on December 2025.",
-    tags: ["Svelte", "Supabase", "Tailwind CSS", "Framer Motion", "RESTful API"],
+      "Vaultxd (Vaulted) is a platform where users can write, rate, and share reviews about the music they love. This website is built using Next.js for the frontend and Supabase for the backend. This site is heavily optimized with Redis for aggressive caching and utilizes Spotify's API for the music library. The site is currently live with active users. ",
+    tags: ["Next.js", "Supabase", "Tailwind CSS", "Framer Motion","Redis", "RESTful API", "Claude Code"],
     link: "https://vaultxd.com",
-    status: "In progress",
+    status: "Live",
   },
 ];
 
@@ -151,7 +151,7 @@ export default function Projects() {
 
         {/* Projects by category */}
         <div className="space-y-10 sm:space-y-16">
-          {[{ title: "Client Work", items: clientProjects }, { title: "Personal Projects", items: personalProjects }].map(
+          {[{ title: "Client Work", items: clientProjects }, { title: "Startup", items: personalProjects }].map(
             (section) => (
               <div key={section.title} className="space-y-8">
                 <motion.h3

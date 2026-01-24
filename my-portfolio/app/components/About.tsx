@@ -15,6 +15,11 @@ const techStack = [
   { name: "Node.js", category: "Backend" },
   { name: "MongoDB", category: "Database"},
   { name: "SQL", category: "Database"},
+  { name: "Claude Code", category: "Artificial Intelligence"},
+  { name: "Codex", category: "Artificial Intelligence"},
+  { name: "Gemini Pro", category: "Artificial Intelligence"},
+
+
 ];
 
 const skills = [
