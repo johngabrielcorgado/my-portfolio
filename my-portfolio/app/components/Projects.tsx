@@ -29,7 +29,7 @@ const clientProjects: Project[] = [
       "A modern venture capital firm website built using Next.js for the frontend, powered by Firebase for database management and authentication. Styled with Tailwind CSS and enhanced by Framer Motion, it delivers a sleek, responsive design with fluid animations. The site includes a custom CMS dashboard for the admin and a blog system optimized for SEO.",
     tags: ["Next.js", "Firebase", "Tailwind", "Framer Motion", "Codex"],
     link: "https://hillsandforestcorp.com",
-    status: "Currently maintaining",
+    status: "COMPLETED",
   },
   {
     id: 1,
@@ -38,7 +38,7 @@ const clientProjects: Project[] = [
       "A modern consultancy firm website built using Next.js for the frontend, powered by Firebase for database management and authentication. Styled with Tailwind CSS and enhanced by Framer Motion, it delivers a sleek, responsive design with fluid animations. The site includes a custom CMS dashboard for the admin and a blog system optimized for SEO.",
     tags: ["Next.js", "Firebase", "Tailwind CSS", "Framer Motion", "Codex"],
     link: "https://kmjconsultancyinc.com",
-    status: "Currently maintaining",
+    status: "COMPLETED",
   },
 ];
 
@@ -48,7 +48,7 @@ const personalProjects: Project[] = [
     title: "Vaultxd",
     description:
       "Vaultxd (Vaulted) is a platform where users can write, rate, and share reviews about the music they love. This website is built using Next.js for the frontend and Supabase for the backend. This site is heavily optimized with Redis for aggressive caching and utilizes Spotify's API for the music library. The site is currently live with active users. ",
-    tags: ["Next.js", "Supabase", "Tailwind CSS", "Framer Motion","Redis", "RESTful API", "Claude Code"],
+    tags: ["Next.js", "Supabase", "Tailwind CSS", "Framer Motion", "Redis", "RESTful API", "Claude Code"],
     link: "https://vaultxd.com",
     status: "Live",
   },
@@ -80,9 +80,9 @@ export default function Projects() {
   const hoverMotion = useMemo(() => {
     if (!isAnimatedDesktop) return undefined;
     return {
-      y: -6,
-      scale: 1.02,
-      transition: { duration: 0.12, ease: "easeOut" as const },
+      y: -4,
+      scale: 1.01,
+      transition: { duration: 0.15, ease: "easeOut" as const },
     };
   }, [isAnimatedDesktop]);
   const projectInitial = useMemo(() => {
@@ -93,31 +93,13 @@ export default function Projects() {
     () => (isAnimatedDesktop ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }),
     [isAnimatedDesktop]
   );
-  const shouldAnimateBackground = isAnimatedDesktop;
 
   return (
-    <section id="projects" className="relative py-24 md:py-32 bg-slate-950 overflow-hidden">
-      {/* Background effects */}
+    <section id="projects" className="relative py-24 md:py-32 bg-zinc-950 overflow-hidden">
+      {/* Background */}
       <div className="absolute inset-0">
-        {shouldAnimateBackground ? (
-          <>
-            <motion.div
-              animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 0] }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"
-            />
-            <motion.div
-              animate={{ scale: [1.3, 1, 1.3], rotate: [180, 0, 180] }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl"
-            />
-          </>
-        ) : (
-          <>
-            <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-violet-600/10 rounded-full blur-3xl" />
-          </>
-        )}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_60%_20%,rgba(139,92,246,0.08),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_20%_80%,rgba(168,85,247,0.06),transparent_60%)]" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8">
@@ -134,16 +116,17 @@ export default function Projects() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-block px-4 py-2 bg-purple-500/10 backdrop-blur-sm border border-purple-500/20 rounded-full text-purple-300 text-sm font-medium mb-4"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/6 border border-purple-500/12 rounded-full text-xs font-medium uppercase tracking-widest text-purple-300/80 mb-4"
           >
+            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
             My Work
           </motion.span>
-          
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">
+
+          <h2 className="font-display text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-100">
             Projects
           </h2>
-          
-          <p className="text-slate-400 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
+
+          <p className="text-zinc-400 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
             A collection of projects showcasing my expertise in full-stack development,
             design, and problem-solving
           </p>
@@ -151,20 +134,23 @@ export default function Projects() {
 
         {/* Projects by category */}
         <div className="space-y-10 sm:space-y-16">
-          {[{ title: "Client Work", items: clientProjects }, { title: "Startup", items: personalProjects }].map(
+          {[{ title: "Startup", items: personalProjects }, { title: "Past Client Work", items: clientProjects }].map(
             (section) => (
-              <div key={section.title} className="space-y-8">
-                <motion.h3
+              <div key={section.title} className="space-y-6">
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
-                  className="text-left text-2xl font-semibold text-white"
+                  className="flex items-center gap-4"
                 >
-                  {section.title}
-                </motion.h3>
+                  <h3 className="font-display text-xl font-bold text-zinc-200 tracking-tight">
+                    {section.title}
+                  </h3>
+                  <div className="flex-1 h-px bg-zinc-800/50" />
+                </motion.div>
 
-                <div className="space-y-6 sm:space-y-8">
+                <div className="space-y-5 sm:space-y-6">
                   {section.items.map((project, index) => (
                     <ProjectCard
                       key={project.id}
@@ -194,34 +180,23 @@ export default function Projects() {
           className="mt-20 text-center"
         >
           <div className="relative inline-block">
-            <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-              className="absolute inset-0 bg-gradient-to-r from-purple-600 to-violet-600 rounded-2xl blur-2xl"
-            />
-            <div className="relative bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl p-12">
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <div className="absolute -inset-4 bg-purple-600/10 rounded-3xl blur-2xl animate-glow-pulse" />
+            <div className="relative bg-zinc-900/60 border border-zinc-800/40 rounded-2xl p-10 sm:p-12">
+              <h3 className="font-display text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">
                 Have a project in mind?
               </h3>
-              <p className="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
+              <p className="text-zinc-400 text-lg mb-8 max-w-2xl mx-auto">
                 Let&apos;s collaborate! Consult for a draft delivered within 1-2 days.
               </p>
               <motion.a
                 href="/contact"
                 whileHover={{
-                  scale: 1.05,
-                  y: -3,
-                  transition: { duration: 0.12, ease: "easeOut" },
+                  scale: 1.04,
+                  y: -2,
+                  transition: { duration: 0.15, ease: "easeOut" },
                 }}
                 whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl font-semibold shadow-lg shadow-purple-500/50 hover:shadow-purple-500/70 transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-purple-600 text-white rounded-xl font-semibold shadow-lg shadow-purple-600/20 hover:shadow-purple-500/30 transition-all"
               >
                 Contact Me
               </motion.a>
@@ -267,9 +242,9 @@ function ProjectCard({
         viewport={{ once: true, amount: 0.25, margin: "-10% 0px -10% 0px" }}
         transition={getCardTransition(index)}
         whileHover={hoverMotion}
-        className="group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+        className="group relative block bg-zinc-900/40 border border-zinc-800/40 rounded-2xl overflow-hidden hover:border-purple-500/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/30"
       >
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-violet-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <DesktopCardContent project={project} revealSpring={revealSpring} />
       </motion.a>
     );
@@ -294,14 +269,14 @@ function DesktopCardContent({
   return (
     <div className="relative p-6 md:p-8">
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-6 mb-4">
-        <h4 className="text-xl sm:text-2xl font-bold text-white">{project.title}</h4>
-        <div className="inline-flex items-center gap-2 text-purple-400 font-medium">
+        <h4 className="font-display text-xl sm:text-2xl font-bold text-zinc-100 tracking-tight">{project.title}</h4>
+        <div className="inline-flex items-center gap-2 text-purple-400/70 font-medium text-sm group-hover:text-purple-300 transition-colors">
           Visit Site
           <FiArrowUpRight className="text-lg" aria-hidden />
         </div>
       </div>
 
-      <p className="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed">
+      <p className="text-zinc-500 text-sm sm:text-base mb-6 leading-relaxed">
         {project.description}
       </p>
 
@@ -312,7 +287,7 @@ function DesktopCardContent({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ...revealSpring, delay: 0.08 }}
-            className="px-3 py-1 bg-purple-600/20 border border-purple-500/40 text-purple-300 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide"
+            className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-300 rounded-lg text-xs font-semibold uppercase tracking-wider"
           >
             {project.status}
           </motion.span>
@@ -324,7 +299,7 @@ function DesktopCardContent({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ ...revealSpring, delay: 0.12 + i * 0.04 }}
-            className="px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-lg text-xs sm:text-sm text-slate-300"
+            className="px-3 py-1 bg-zinc-800/40 border border-zinc-700/30 rounded-lg text-xs text-zinc-400"
           >
             {tag}
           </motion.span>
@@ -359,21 +334,21 @@ function MobileProjectCard({
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
-      className={`group relative block bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-purple-500/50 transform-gpu transition-all duration-300 ease-out ${visibilityClass}`}
+      className={`group relative block bg-zinc-900/40 border border-zinc-800/40 rounded-2xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-purple-500/30 transform-gpu transition-all duration-300 ease-out ${visibilityClass}`}
       style={cardDelay}
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/10 to-violet-600/10 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-purple-500/5 to-violet-500/5 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
       <div className="relative p-5 sm:p-6">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
-            <h4 className="text-lg font-semibold text-white">{project.title}</h4>
-            <div className="inline-flex items-center gap-2 text-purple-300 text-sm font-medium">
+            <h4 className="font-display text-lg font-semibold text-zinc-100">{project.title}</h4>
+            <div className="inline-flex items-center gap-2 text-purple-400/60 text-sm font-medium">
               Visit
               <FiArrowUpRight className="text-base" aria-hidden />
             </div>
           </div>
 
-          <p className="text-slate-400 text-sm leading-relaxed">
+          <p className="text-zinc-500 text-sm leading-relaxed">
             {project.description}
           </p>
         </div>
@@ -381,7 +356,7 @@ function MobileProjectCard({
         <div className="mt-5 flex flex-wrap gap-2">
           {project.status && (
             <span
-              className={`px-2.5 py-1 rounded-full bg-purple-600/20 border border-purple-500/30 text-[11px] uppercase tracking-wide text-purple-300/90 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
+              className={`px-2.5 py-1 rounded-lg bg-purple-500/10 border border-purple-500/20 text-[11px] uppercase tracking-wider text-purple-300/80 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
               style={animate ? { transitionDelay: `${80 + index * 40}ms` } : undefined}
             >
               {project.status}
@@ -390,7 +365,7 @@ function MobileProjectCard({
           {project.tags.map((tag, i) => (
             <span
               key={tag}
-              className={`px-2.5 py-1 rounded-full bg-slate-800/90 border border-slate-700/50 text-[11px] text-slate-300 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
+              className={`px-2.5 py-1 rounded-lg bg-zinc-800/40 border border-zinc-700/30 text-[11px] text-zinc-400 transition-all duration-300 ease-out ${animate ? (isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2") : ""}`}
               style={animate ? { transitionDelay: `${120 + index * 40 + i * 30}ms` } : undefined}
             >
               {tag}

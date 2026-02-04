@@ -1,6 +1,5 @@
 "use client";
 
-// this comment are for commits
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
@@ -13,6 +12,7 @@ import { FiMenu, FiX } from "react-icons/fi";
 import useIsMobile from "../hooks/use-is-mobile";
 
 const MotionLink = motion(Link);
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
@@ -20,7 +20,7 @@ export default function Navbar() {
   const prefersReducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
   const { scrollY } = useScroll();
-  const navOpacity = useTransform(scrollY, [0, 100], [0.8, 1]);
+  const navOpacity = useTransform(scrollY, [0, 100], [0.85, 1]);
 
   const desktopTransition = useMemo(
     () =>
@@ -80,9 +80,9 @@ export default function Navbar() {
           : { duration: isMobile ? 0.35 : 0.5, ease: "easeOut" }
       }
       style={{ opacity: navOpacity }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/50 shadow-lg shadow-purple-500/5"
+          ? "bg-zinc-950/80 backdrop-blur-lg border-b border-zinc-800/40 shadow-2xl shadow-purple-950/10"
           : "bg-transparent"
       }`}
     >
@@ -91,24 +91,18 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="relative group">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative z-10 flex items-center gap-2"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative z-10 flex items-center gap-3"
             >
-              <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">
-                Gabriel Corgado | Software Engineer
+              <span className="font-display text-xl md:text-2xl font-bold tracking-tight text-zinc-50">
+                Gabriel Corgado
               </span>
             </motion.div>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-violet-600/20 rounded-xl blur-xl"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            />
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1">
             {navItems.map((item, index) => {
               const isActive = activeSection === item.name.toLowerCase();
               return (
@@ -116,8 +110,8 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setActiveSection(item.name.toLowerCase())}
-                  className={`relative px-4 py-2 rounded-lg font-bold transition-colors ${
-                    isActive ? "text-purple-400" : "text-slate-300 hover:text-white"
+                  className={`relative px-5 py-2.5 rounded-lg font-medium text-sm tracking-wide transition-colors ${
+                    isActive ? "text-purple-300" : "text-zinc-400 hover:text-zinc-100"
                   }`}
                   initial={prefersReducedMotion ? false : { opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -126,7 +120,7 @@ export default function Navbar() {
                     ...desktopTransition,
                   }}
                   whileHover={{
-                    y: isMobile ? -3 : -5,
+                    y: isMobile ? -2 : -3,
                     transition: hoverTransition,
                   }}
                   whileTap={{
@@ -138,12 +132,12 @@ export default function Navbar() {
                   {isActive && (
                     <motion.div
                       layoutId="activeSection"
-                      className="absolute inset-0 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-lg"
+                      className="absolute inset-0 bg-purple-500/8 border border-purple-500/15 rounded-lg"
                       transition={{ type: "spring", stiffness: 600, damping: 28 }}
                     />
                   )}
                   <motion.div
-                    className="absolute inset-0 bg-slate-800/30 rounded-lg"
+                    className="absolute inset-0 bg-zinc-800/20 rounded-lg"
                     initial={{ opacity: 0 }}
                     whileHover={{
                       opacity: 1,
@@ -158,16 +152,16 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg bg-slate-800/50 backdrop-blur-sm border border-slate-700/50"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg bg-zinc-900/60 backdrop-blur-sm border border-zinc-800/50"
             onClick={() => setIsMenuOpen((prev) => !prev)}
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
             aria-label="Toggle navigation"
           >
             {isMenuOpen ? (
-              <FiX className="text-slate-300 text-xl" />
+              <FiX className="text-zinc-300 text-xl" />
             ) : (
-              <FiMenu className="text-slate-300 text-xl" />
+              <FiMenu className="text-zinc-300 text-xl" />
             )}
           </motion.button>
         </div>
@@ -187,7 +181,7 @@ export default function Navbar() {
             ? { duration: 0.15 }
             : { duration: isMobile ? 0.16 : 0.2, ease: [0.33, 1, 0.68, 1] }
         }
-        className="md:hidden border-t border-slate-800/50 bg-slate-950/95 backdrop-blur-xl overflow-hidden"
+        className="md:hidden border-t border-zinc-800/30 bg-zinc-950/95 backdrop-blur-xl overflow-hidden"
         style={{ display: isMenuOpen ? "block" : "none" }}
       >
         <div className="px-6 py-4 space-y-2">
@@ -212,37 +206,19 @@ export default function Navbar() {
               }}
               className={`block px-4 py-3 rounded-lg font-medium transition-colors ${
                 activeSection === item.name.toLowerCase()
-                  ? "bg-slate-800/50 text-purple-400 border border-slate-700/50"
-                  : "text-slate-300 hover:bg-slate-800/30 hover:text-white"
+                  ? "bg-purple-500/8 text-purple-300 border border-purple-500/15"
+                  : "text-zinc-400 hover:bg-zinc-800/30 hover:text-zinc-100"
               }`}
             >
               {item.name}
             </MotionLink>
           ))}
-          <MotionLink
-            href="/contact"
-            initial={prefersReducedMotion ? false : { opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={
-              prefersReducedMotion
-                ? { duration: 0.12 }
-                : {
-                    delay: 0.12,
-                    duration: isMobile ? 0.14 : 0.16,
-                    ease: [0.33, 1, 0.68, 1],
-                  }
-            }
-            onClick={() => setIsMenuOpen(false)}
-            className="block px-4 py-3 mt-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white text-center rounded-lg font-semibold shadow-lg shadow-purple-500/30"
-          >
-            Hire Me
-          </MotionLink>
         </div>
       </motion.div>
 
       {/* Decorative gradient line */}
       <motion.div
-        className="h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"
+        className="h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"
         initial={{ scaleX: 0 }}
         animate={{ scaleX: isScrolled ? 1 : 0 }}
         transition={{ duration: prefersReducedMotion ? 0.2 : 0.4 }}

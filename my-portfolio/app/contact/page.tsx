@@ -131,23 +131,16 @@ export default function ContactPage() {
     }
   };
 
+  const inputClasses =
+    "w-full px-4 py-3 bg-zinc-900/50 border border-zinc-800/40 rounded-xl text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-purple-500/40 focus:ring-1 focus:ring-purple-500/20 transition-all";
+
   return (
-    <section className="relative min-h-screen py-24 md:py-32 bg-slate-950 overflow-hidden">
-      {/* Background effects */}
-      {shouldAnimate && (
-        <div className="absolute inset-0">
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"
-          />
-          <motion.div
-            animate={{ scale: [1.2, 1, 1.2], rotate: [90, 0, 90] }}
-            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl"
-          />
-        </div>
-      )}
+    <section className="grain relative min-h-screen py-24 md:py-32 bg-zinc-950 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_20%,rgba(139,92,246,0.1),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_70%_80%,rgba(168,85,247,0.06),transparent_60%)]" />
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
@@ -164,24 +157,25 @@ export default function ContactPage() {
                 initial={shouldAnimate ? { opacity: 0, scale: 0.9 } : false}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={shouldAnimate ? { duration: 0.5 } : undefined}
-                className="inline-block px-4 py-2 bg-purple-500/10 backdrop-blur-sm border border-purple-500/20 rounded-full text-purple-300 text-sm font-medium mb-4"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/6 border border-purple-500/12 rounded-full text-xs font-medium uppercase tracking-widest text-purple-300/80 mb-4"
               >
+                <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
                 Get in Touch
               </motion.span>
-              
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">
+
+              <h1 className="font-display text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-100">
                 Let&apos;s Connect
               </h1>
-              
-              <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-8">
-                Have a project in mind or just want to chat about web development? 
-                I&apos;d love to hear from you. Fill out the form and I&apos;ll get back to you 
+
+              <p className="text-zinc-400 text-base sm:text-lg leading-relaxed mb-8">
+                Have a project in mind or just want to chat about web development?
+                I&apos;d love to hear from you. Fill out the form and I&apos;ll get back to you
                 as soon as possible.
               </p>
             </div>
 
             {/* Contact methods */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               {contactMethods.map((method, index) => (
                 <motion.a
                   key={method.label}
@@ -200,37 +194,35 @@ export default function ContactPage() {
                   whileHover={
                     shouldAnimate
                       ? {
-                          x: isMobile ? 4 : 8,
-                          scale: isMobile ? 1.01 : 1.02,
+                          x: isMobile ? 3 : 6,
                           transition: { duration: 0.12, ease: "easeOut" },
                         }
                       : undefined
                   }
-                  className="flex items-center gap-4 p-4 bg-slate-900/50 backdrop-blur-sm border border-slate-800 rounded-xl hover:border-purple-500/50 transition-colors group"
+                  className="flex items-center gap-4 p-4 bg-zinc-900/40 border border-zinc-800/40 rounded-xl hover:border-purple-500/20 transition-all group"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-violet-600 rounded-lg flex items-center justify-center text-2xl shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/50 transition-shadow">
-                    <span className="text-xl" aria-hidden>
+                  <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/15 rounded-lg flex items-center justify-center text-purple-400 group-hover:text-purple-300 transition-colors">
+                    <span className="text-lg" aria-hidden>
                       {method.icon}
                     </span>
                   </div>
                   <div>
-                    <div className="text-slate-500 text-sm">{method.label}</div>
-                    <div className="text-white font-medium">{method.value}</div>
+                    <div className="text-zinc-600 text-xs uppercase tracking-wider">{method.label}</div>
+                    <div className="text-zinc-200 font-medium text-sm">{method.value}</div>
                   </div>
                 </motion.a>
               ))}
             </div>
-
 
             {/* Availability indicator */}
             <motion.div
               initial={shouldAnimate ? { opacity: 0 } : false}
               animate={{ opacity: 1 }}
               transition={shouldAnimate ? { delay: 0.5 } : undefined}
-              className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/20 rounded-xl"
+              className="flex items-center gap-3 p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-xl"
             >
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-green-400 text-sm font-medium">
+              <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-emerald-400/80 text-sm font-medium">
                 Currently available for new projects
               </span>
             </motion.div>
@@ -243,9 +235,9 @@ export default function ContactPage() {
             transition={shouldAnimate ? { duration: 0.6 } : undefined}
             className="relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-violet-600/20 rounded-3xl blur-2xl" />
-            
-            <div className="relative bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl p-6 sm:p-8 md:p-10">
+            <div className="absolute -inset-4 bg-purple-600/5 rounded-3xl blur-2xl" />
+
+            <div className="relative bg-zinc-900/40 border border-zinc-800/40 rounded-2xl p-6 sm:p-8 md:p-10">
               <AnimatePresence mode="wait">
                 {isSuccess ? (
                   <motion.div
@@ -263,12 +255,12 @@ export default function ContactPage() {
                           ? { type: "spring", stiffness: 200, damping: 10 }
                           : undefined
                       }
-                      className="w-20 h-20 bg-gradient-to-br from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl text-white"
+                      className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-emerald-400"
                     >
                       <FaCheckCircle />
                     </motion.div>
-                    <h3 className="text-2xl font-bold text-white mb-3">Message Sent!</h3>
-                    <p className="text-slate-400">
+                    <h3 className="font-display text-2xl font-bold text-zinc-100 mb-3">Message Sent!</h3>
+                    <p className="text-zinc-400 text-sm">
                       Thanks for reaching out. I&apos;ll get back to you soon!
                     </p>
                   </motion.div>
@@ -279,10 +271,10 @@ export default function ContactPage() {
                     initial={shouldAnimate ? { opacity: 0 } : false}
                     animate={{ opacity: 1 }}
                     exit={shouldAnimate ? { opacity: 0 } : undefined}
-                    className="space-y-6"
+                    className="space-y-5"
                     autoComplete="off"
                   >
-                    <h2 className="text-2xl font-bold text-white mb-6">Send a Message</h2>
+                    <h2 className="font-display text-xl font-bold text-zinc-100 mb-6">Send a Message</h2>
 
                     <div className="hidden" aria-hidden="true">
                       <label htmlFor="portfolio-company" className="hidden">
@@ -303,28 +295,21 @@ export default function ContactPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {nameFields.map((field) => (
                         <div key={field} className="relative">
-                      <motion.input
-                        type="text"
-                        name={field}
-                        placeholder={field === 'first' ? 'First Name' : 'Last Name'}
-                        value={formData[field]}
+                          <input
+                            type="text"
+                            name={field}
+                            placeholder={field === "first" ? "First Name" : "Last Name"}
+                            value={formData[field]}
                             onChange={handleChange}
                             onFocus={() => setFocusedField(field)}
                             onBlur={() => setFocusedField(null)}
-                            className="w-full px-4 py-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all"
+                            className={inputClasses}
                             required
-                            animate={
-                              shouldAnimate
-                                ? {
-                                    scale: focusedField === field ? 1.02 : 1,
-                                  }
-                                : undefined
-                            }
                           />
                           {focusedField === field && (
                             <motion.div
                               layoutId={shouldAnimate ? "inputFocus" : undefined}
-                              className="absolute inset-0 border-2 border-purple-500 rounded-xl pointer-events-none"
+                              className="absolute inset-0 border border-purple-500/30 rounded-xl pointer-events-none"
                               transition={
                                 shouldAnimate
                                   ? { type: "spring", stiffness: 300, damping: 30 }
@@ -338,28 +323,21 @@ export default function ContactPage() {
 
                     {/* Email field */}
                     <div className="relative">
-                      <motion.input
+                      <input
                         type="email"
                         name="email"
                         placeholder="Email Address"
                         value={formData.email}
                         onChange={handleChange}
-                        onFocus={() => setFocusedField('email')}
+                        onFocus={() => setFocusedField("email")}
                         onBlur={() => setFocusedField(null)}
-                        className="w-full px-4 py-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all"
+                        className={inputClasses}
                         required
-                        animate={
-                          shouldAnimate
-                            ? {
-                                scale: focusedField === 'email' ? 1.02 : 1,
-                              }
-                            : undefined
-                        }
                       />
-                      {focusedField === 'email' && (
+                      {focusedField === "email" && (
                         <motion.div
                           layoutId={shouldAnimate ? "inputFocus" : undefined}
-                          className="absolute inset-0 border-2 border-purple-500 rounded-xl pointer-events-none"
+                          className="absolute inset-0 border border-purple-500/30 rounded-xl pointer-events-none"
                           transition={
                             shouldAnimate
                               ? { type: "spring", stiffness: 300, damping: 30 }
@@ -371,29 +349,22 @@ export default function ContactPage() {
 
                     {/* Message field */}
                     <div className="relative">
-                      <motion.textarea
+                      <textarea
                         name="message"
                         placeholder="Your Message"
                         rows={6}
                         value={formData.message}
                         onChange={handleChange}
-                        onFocus={() => setFocusedField('message')}
+                        onFocus={() => setFocusedField("message")}
                         onBlur={() => setFocusedField(null)}
-                        className="w-full px-4 py-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition-all resize-none"
+                        className={`${inputClasses} resize-none`}
                         required
                         maxLength={500}
-                        animate={
-                          shouldAnimate
-                            ? {
-                                scale: focusedField === 'message' ? 1.02 : 1,
-                              }
-                            : undefined
-                        }
                       />
-                      {focusedField === 'message' && (
+                      {focusedField === "message" && (
                         <motion.div
                           layoutId={shouldAnimate ? "inputFocus" : undefined}
-                          className="absolute inset-0 border-2 border-purple-500 rounded-xl pointer-events-none"
+                          className="absolute inset-0 border border-purple-500/30 rounded-xl pointer-events-none"
                           transition={
                             shouldAnimate
                               ? { type: "spring", stiffness: 300, damping: 30 }
@@ -401,13 +372,13 @@ export default function ContactPage() {
                           }
                         />
                       )}
-                      <div className="absolute bottom-3 right-3 text-slate-500 text-xs">
+                      <div className="absolute bottom-3 right-3 text-zinc-600 text-xs">
                         {formData.message.length} / 500
                       </div>
                     </div>
 
                     {error && (
-                      <p className="text-sm text-red-400 text-center">
+                      <p className="text-sm text-red-400/80 text-center">
                         {error}
                       </p>
                     )}
@@ -419,14 +390,14 @@ export default function ContactPage() {
                       whileHover={
                         shouldAnimate
                           ? {
-                              scale: 1.03,
-                              y: -3,
+                              scale: 1.02,
+                              y: -2,
                               transition: { duration: 0.12, ease: "easeOut" },
                             }
                           : undefined
                       }
-                      whileTap={shouldAnimate ? { scale: 0.97 } : undefined}
-                      className="w-full relative px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl font-semibold overflow-hidden shadow-lg shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed group"
+                      whileTap={shouldAnimate ? { scale: 0.98 } : undefined}
+                      className="w-full relative px-8 py-4 bg-purple-600 text-white rounded-xl font-semibold overflow-hidden shadow-lg shadow-purple-600/15 disabled:opacity-50 disabled:cursor-not-allowed group"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
                         {isSubmitting ? (
@@ -453,7 +424,7 @@ export default function ContactPage() {
                       </span>
                       {shouldAnimate && (
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-purple-500 to-violet-500"
+                          className="absolute inset-0 bg-purple-500"
                           initial={{ x: "-100%" }}
                           whileHover={{ x: 0 }}
                           transition={{ duration: 0.3 }}
@@ -462,7 +433,7 @@ export default function ContactPage() {
                     </motion.button>
 
                     {/* Privacy note */}
-                    <p className="text-slate-500 text-xs text-center">
+                    <p className="text-zinc-600 text-xs text-center">
                       Your information is safe and will never be shared with third parties.
                     </p>
                   </motion.form>
