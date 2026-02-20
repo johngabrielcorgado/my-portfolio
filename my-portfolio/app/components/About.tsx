@@ -265,7 +265,7 @@ export default function About() {
             <div className="md:col-span-6 md:col-start-7 space-y-6">
               <p
                 ref={(el) => { journeyParaRefs.current[0] = el; }}
-                className="text-zinc-400 text-base md:text-lg leading-relaxed"
+                className="text-zinc-300 text-base md:text-lg leading-relaxed"
               >
                 With a passion for technology and problem-solving, I&apos;ve dedicated myself to mastering
                 the art of full-stack development. Every project is an opportunity to learn, innovate,
@@ -273,7 +273,7 @@ export default function About() {
               </p>
               <p
                 ref={(el) => { journeyParaRefs.current[1] = el; }}
-                className="text-zinc-400 text-base md:text-lg leading-relaxed"
+                className="text-zinc-300 text-base md:text-lg leading-relaxed"
               >
                 I believe in writing clean, maintainable code and creating intuitive user experiences
                 that make a difference. Whether it&apos;s a complex web application or a sleek landing page,
@@ -293,7 +293,7 @@ export default function About() {
                 </span>
                 <span
                   ref={(el) => { skillCounterRefs.current[i] = el; }}
-                  className="font-display text-3xl md:text-4xl font-bold text-purple-400"
+                  className="font-display text-2xl md:text-4xl font-bold text-purple-400 shrink-0"
                 >
                   0%
                 </span>
