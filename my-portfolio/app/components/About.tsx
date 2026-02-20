@@ -68,8 +68,8 @@ export default function About() {
       const headlineTl = gsap.timeline({
         scrollTrigger: {
           trigger: headlineRef.current,
-          start: "top 90%",
-          end: "top 30%",
+          start: isMobile ? "top 100%" : "top 90%",
+          end: isMobile ? "top 50%" : "top 30%",
           scrub: 0.8,
         },
       });
@@ -112,7 +112,7 @@ export default function About() {
         clipPath: "inset(0 0 0% 0)",
         duration: 1.2,
         ease: "power3.inOut",
-        scrollTrigger: { trigger: pullQuoteRef.current, start: "top 75%", once: true },
+        scrollTrigger: { trigger: pullQuoteRef.current, start: isMobile ? "top 100%" : "top 75%", once: true },
       });
 
       // --- Journey paragraphs fade up ---
@@ -124,7 +124,7 @@ export default function About() {
           stagger: 0.25,
           duration: 0.7,
           ease: "power2.out",
-          scrollTrigger: { trigger: validParas[0], start: "top 80%", once: true },
+          scrollTrigger: { trigger: validParas[0], start: isMobile ? "top 100%" : "top 80%", once: true },
         });
       }
 
@@ -137,7 +137,7 @@ export default function About() {
           stagger: 0.15,
           duration: 0.5,
           ease: "power2.out",
-          scrollTrigger: { trigger: validLabels[0], start: "top 85%", once: true },
+          scrollTrigger: { trigger: validLabels[0], start: isMobile ? "top 100%" : "top 85%", once: true },
         });
       }
 
