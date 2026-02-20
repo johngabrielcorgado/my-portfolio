@@ -1,302 +1,335 @@
 "use client";
-import React, { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { HiOutlineLightBulb } from "react-icons/hi";
-import { FiPenTool, FiServer, FiSmartphone, FiZap } from "react-icons/fi";
+
+import React, { useRef } from "react";
+import { useReducedMotion } from "framer-motion";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import useIsMobile from "../hooks/use-is-mobile";
 
-const techStack = [
-  { name: "Next.js", category: "Frontend" },
-  { name: "Vue.js", category: "Frontend" },
-  { name: "Vite.js", category: "Build Tool" },
-  { name: "Firebase", category: "Backend" },
-  { name: "Supabase", category: "Backend" },
-  { name: "Express.js", category: "Backend" },
-  { name: "Node.js", category: "Backend" },
-  { name: "MongoDB", category: "Database" },
-  { name: "SQL", category: "Database" },
-  { name: "Claude Code", category: "Artificial Intelligence" },
-  { name: "Codex", category: "Artificial Intelligence" },
-  { name: "Gemini Pro", category: "Artificial Intelligence" },
-];
+gsap.registerPlugin(ScrollTrigger);
 
 const skills = [
-  { title: "Full-Stack Development", percentage: 100, color: "from-purple-500 to-violet-500" },
-  { title: "UI/UX Design", percentage: 90, color: "from-violet-500 to-fuchsia-500" },
+  { title: "Full-Stack Development", percentage: 100 },
+  { title: "UI/UX Design", percentage: 90 },
+];
+
+const stats = [
+  { number: 6, suffix: "+", label: "Projects" },
+  { number: 3, suffix: "+", label: "Years Experience" },
 ];
 
 const capabilities = [
-  { icon: <FiPenTool />, title: "UI/UX Design", desc: "Beautiful interfaces" },
-  { icon: <FiServer />, title: "Backend Dev", desc: "Robust systems" },
-  { icon: <FiSmartphone />, title: "Responsive", desc: "Mobile-first" },
-  { icon: <FiZap />, title: "Performance", desc: "Optimized speed" },
+  "UI/UX Design",
+  "Backend Dev",
+  "Responsive",
+  "Performance",
 ];
 
 export default function About() {
-  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotion = useReducedMotion() ?? false;
   const isMobile = useIsMobile();
-  const revealTransition = useMemo(
-    () =>
-      prefersReducedMotion
-        ? { duration: 0.18, ease: "linear" as const }
-        : { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
-    [prefersReducedMotion]
-  );
-  const hoverTransition = useMemo(
-    () =>
-      prefersReducedMotion
-        ? { duration: 0.1, ease: "linear" as const }
-        : {
-            duration: isMobile ? 0.1 : 0.12,
-            ease: "easeOut" as const,
-          },
-    [prefersReducedMotion, isMobile]
-  );
 
-  const techCategories = useMemo(() => {
-    const grouped: Record<string, string[]> = {};
-    for (const t of techStack) {
-      (grouped[t.category] ??= []).push(t.name);
-    }
-    return Object.entries(grouped);
-  }, []);
+  const sectionRef = useRef<HTMLElement>(null);
+  const headlineRef = useRef<HTMLDivElement>(null);
+  const aboutWordRef = useRef<HTMLSpanElement>(null);
+  const meWordRef = useRef<HTMLSpanElement>(null);
+  const ruleRef = useRef<HTMLDivElement>(null);
+  const statsStripRef = useRef<HTMLDivElement>(null);
+  const statNumberRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const pullQuoteRef = useRef<HTMLParagraphElement>(null);
+  const journeyParaRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const skillLineRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const skillLabelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const skillCounterRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const tickerInnerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion) {
+        gsap.set([aboutWordRef.current, meWordRef.current], { yPercent: 0, opacity: 1 });
+        gsap.set(ruleRef.current, { scaleX: 1, opacity: 1 });
+        gsap.set(pullQuoteRef.current, { clipPath: "inset(0 0 0% 0)" });
+        gsap.set([...journeyParaRefs.current.filter(Boolean)], { opacity: 1, y: 0 });
+        gsap.set([...skillLabelRefs.current.filter(Boolean)], { opacity: 1, y: 0 });
+        skillLineRefs.current.forEach((line, i) => {
+          if (line) gsap.set(line, { width: `${skills[i].percentage}%` });
+        });
+        skillCounterRefs.current.forEach((el, i) => {
+          if (el) el.textContent = `${skills[i].percentage}%`;
+        });
+        statNumberRefs.current.forEach((el, i) => {
+          if (el) el.textContent = String(stats[i].number);
+        });
+        return;
+      }
+
+      // --- Headline: scroll-scrubbed slide from left ---
+      const headlineTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: headlineRef.current,
+          start: "top 90%",
+          end: "top 30%",
+          scrub: 0.8,
+        },
+      });
+      headlineTl
+        .fromTo(aboutWordRef.current, { x: -200, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1, ease: "none" })
+        .fromTo(meWordRef.current, { x: -200, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1, ease: "none" }, 0.3)
+        .fromTo(ruleRef.current, { scaleX: 0, transformOrigin: "left" }, { scaleX: 1, duration: 0.6, ease: "none" }, 0.6);
+
+      // --- Desktop: scrub-based parallax drift on "ME" ---
+      if (!isMobile) {
+        gsap.to(meWordRef.current, {
+          x: 60,
+          ease: "none",
+          scrollTrigger: {
+            trigger: headlineRef.current,
+            start: "top 60%",
+            end: "bottom 20%",
+            scrub: 1,
+          },
+        });
+      }
+
+      // --- Stats counter animation ---
+      statNumberRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: stats[i].number,
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: { trigger: statsStripRef.current, start: "top 80%", once: true },
+          onUpdate: () => {
+            if (el) el.textContent = String(Math.round(obj.val));
+          },
+        });
+      });
+
+      // --- Pull quote clip-path reveal ---
+      gsap.to(pullQuoteRef.current, {
+        clipPath: "inset(0 0 0% 0)",
+        duration: 1.2,
+        ease: "power3.inOut",
+        scrollTrigger: { trigger: pullQuoteRef.current, start: "top 75%", once: true },
+      });
+
+      // --- Journey paragraphs fade up ---
+      const validParas = journeyParaRefs.current.filter(Boolean);
+      if (validParas.length) {
+        gsap.from(validParas, {
+          autoAlpha: 0,
+          y: 30,
+          stagger: 0.25,
+          duration: 0.7,
+          ease: "power2.out",
+          scrollTrigger: { trigger: validParas[0], start: "top 80%", once: true },
+        });
+      }
+
+      // --- Skill labels fade in ---
+      const validLabels = skillLabelRefs.current.filter(Boolean);
+      if (validLabels.length) {
+        gsap.from(validLabels, {
+          autoAlpha: 0,
+          y: 20,
+          stagger: 0.15,
+          duration: 0.5,
+          ease: "power2.out",
+          scrollTrigger: { trigger: validLabels[0], start: "top 85%", once: true },
+        });
+      }
+
+      // --- Skill lines width tween + counter ---
+      skillLineRefs.current.forEach((line, i) => {
+        if (!line) return;
+        const counter = skillCounterRefs.current[i];
+        const obj = { val: 0 };
+
+        gsap.to(line, {
+          width: `${skills[i].percentage}%`,
+          duration: 1.4,
+          delay: i * 0.2,
+          ease: "power2.out",
+          scrollTrigger: { trigger: line, start: "top 85%", once: true },
+        });
+
+        gsap.to(obj, {
+          val: skills[i].percentage,
+          duration: 1.4,
+          delay: i * 0.2,
+          ease: "power2.out",
+          scrollTrigger: { trigger: line, start: "top 85%", once: true },
+          onUpdate: () => {
+            if (counter) counter.textContent = `${Math.round(obj.val)}%`;
+          },
+        });
+      });
+
+      // --- Capability ticker: infinite horizontal scroll ---
+      if (tickerInnerRef.current) {
+        const totalWidth = tickerInnerRef.current.scrollWidth;
+        const singleSetWidth = totalWidth / 3;
+
+        gsap.to(tickerInnerRef.current, {
+          x: -singleSetWidth,
+          duration: isMobile ? 15 : 25,
+          ease: "none",
+          repeat: -1,
+          modifiers: {
+            x: gsap.utils.unitize((x) => parseFloat(String(x)) % singleSetWidth),
+          },
+        });
+      }
+    },
+    { scope: sectionRef, dependencies: [isMobile, prefersReducedMotion] }
+  );
 
   return (
-    <section id="about" className="relative py-24 md:py-32 bg-zinc-950 overflow-hidden">
-      {/* Background */}
+    <section ref={sectionRef} id="about" className="relative py-32 md:py-48 overflow-hidden">
+      {/* Subtle background radials */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_50%,rgba(139,92,246,0.08),transparent_60%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_70%_80%,rgba(168,85,247,0.06),transparent_60%)]" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8">
-        {/* Section header */}
-        <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/6 border border-purple-500/12 rounded-full text-xs font-medium uppercase tracking-widest text-purple-300/80 mb-4"
-          >
-            <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" />
-            Get to know me
-          </motion.span>
+      <div className="relative z-10">
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-6xl font-bold mb-6 tracking-tight text-zinc-100">
-            About Me
-          </h2>
-
-          <p className="text-zinc-400 text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            I specialize in building modern, high-performance web applications
-            using the latest technologies across the full stack. Passionate about creating
-            seamless user experiences and scalable solutions.
-          </p>
-        </motion.div>
-
-        {/* Main content grid */}
-        <div className="grid gap-10 md:grid-cols-2 md:gap-12 mb-16 md:mb-20">
-          {/* Left column - Skills */}
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
-            className="space-y-8"
-          >
-            <div className="bg-zinc-900/40 border border-zinc-800/40 rounded-2xl p-6 sm:p-8">
-              <h3 className="font-display text-2xl font-bold text-zinc-100 mb-6 flex items-center gap-3">
-                <span className="text-2xl text-purple-400" aria-hidden>
-                  <HiOutlineLightBulb />
-                </span>
-                Expertise
-              </h3>
-
-              <div className="space-y-6">
-                {skills.map((skill, index) => (
-                  <motion.div
-                    key={skill.title}
-                    initial={prefersReducedMotion ? false : { opacity: 0, x: -18 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
-                    transition={{
-                      delay: prefersReducedMotion ? 0 : index * 0.08,
-                      ...(prefersReducedMotion
-                        ? revealTransition
-                        : {
-                            duration: isMobile ? 0.4 : revealTransition.duration,
-                            ease: revealTransition.ease,
-                          }),
-                    }}
-                  >
-                    <div className="flex justify-between items-center mb-2.5">
-                      <span className="text-zinc-300 font-medium text-sm">{skill.title}</span>
-                      <span className="text-purple-400 font-semibold text-sm">{skill.percentage}%</span>
-                    </div>
-                    <div className="h-1.5 bg-zinc-800/60 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.percentage}%` }}
-                        viewport={{ once: true }}
-                        transition={{
-                          delay: prefersReducedMotion ? 0 : index * 0.08 + 0.2,
-                          duration: prefersReducedMotion
-                            ? 0.45
-                            : isMobile
-                            ? 0.7
-                            : 1,
-                          ease: "easeOut",
-                        }}
-                        className={`h-full bg-gradient-to-r ${skill.color} rounded-full`}
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Stats cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { number: "2+", label: "Projects Completed" },
-                { number: "3+", label: "Years Experience" },
-              ].map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.25 }}
-                  transition={{
-                    delay: prefersReducedMotion ? 0 : index * 0.08 + 0.2,
-                    duration: prefersReducedMotion ? 0.2 : isMobile ? 0.3 : 0.4,
-                    ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
-                  }}
-                  whileHover={{
-                    y: prefersReducedMotion ? -2 : isMobile ? -3 : -5,
-                    scale: prefersReducedMotion ? 1.01 : isMobile ? 1.01 : 1.02,
-                    transition: hoverTransition,
-                  }}
-                  className="bg-zinc-900/40 border border-zinc-800/40 rounded-xl p-6 text-center"
-                >
-                  <div className="font-display text-4xl font-bold bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent mb-2">
-                    {stat.number}
-                  </div>
-                  <div className="text-zinc-500 text-sm">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Right column - About text and features */}
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={prefersReducedMotion ? { duration: 0.2 } : { duration: 0.6 }}
-            className="space-y-6"
-          >
-            <div className="bg-zinc-900/40 border border-zinc-800/40 rounded-2xl p-6 sm:p-8">
-              <h3 className="font-display text-2xl font-bold text-zinc-100 mb-4">My Journey</h3>
-              <div className="space-y-4 text-zinc-400 leading-relaxed">
-                <p>
-                  With a passion for technology and problem-solving, I&apos;ve dedicated myself to mastering
-                  the art of full-stack development. Every project is an opportunity to learn, innovate,
-                  and push the boundaries of what&apos;s possible on the web.
-                </p>
-                <p>
-                  I believe in writing clean, maintainable code and creating intuitive user experiences
-                  that make a difference. Whether it&apos;s a complex web application or a sleek landing page,
-                  I approach each challenge with enthusiasm and attention to detail.
-                </p>
-              </div>
-            </div>
-
-            {/* What I do cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {capabilities.map((item, index) => (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    delay: prefersReducedMotion ? 0 : index * 0.06,
-                    duration: prefersReducedMotion ? 0.2 : isMobile ? 0.24 : 0.3,
-                    ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
-                  }}
-                  whileHover={{
-                    y: prefersReducedMotion ? -3 : isMobile ? -4 : -5,
-                    scale: prefersReducedMotion ? 1.01 : isMobile ? 1.02 : 1.03,
-                    transition: hoverTransition,
-                  }}
-                  className="bg-zinc-900/40 border border-zinc-800/40 rounded-xl p-4 sm:p-5 text-center group"
-                >
-                  <div className="text-2xl text-purple-400/70 mb-2 group-hover:text-purple-300 transition-colors" aria-hidden>
-                    {item.icon}
-                  </div>
-                  <div className="text-zinc-200 font-semibold text-sm mb-1">{item.title}</div>
-                  <div className="text-zinc-500 text-xs">{item.desc}</div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+        {/* ── BLOCK 1: Oversized Split Headline ── */}
+        <div ref={headlineRef} className="max-w-7xl mx-auto px-4 sm:px-8 mb-24 md:mb-32">
+          <div className="overflow-hidden">
+            <span
+              ref={aboutWordRef}
+              className="block font-display text-[clamp(4rem,15vw,12rem)] font-bold leading-[0.85] tracking-tighter text-zinc-100"
+            >
+              ABOUT
+            </span>
+          </div>
+          <div className="overflow-hidden">
+            <span
+              ref={meWordRef}
+              className="block font-display text-[clamp(4rem,15vw,12rem)] font-bold leading-[0.85] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-500 md:ml-[30%]"
+            >
+              ME
+            </span>
+          </div>
+          <div ref={ruleRef} className="mt-8 h-px w-24 bg-gradient-to-r from-purple-500 to-transparent" />
         </div>
 
-        {/* Tech stack section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <h3 className="font-display text-2xl sm:text-3xl font-bold text-zinc-100 mb-4 tracking-tight">
-            Technologies I Work With
-          </h3>
-          <p className="text-zinc-500 mb-10 text-sm">
-            Constantly learning and adapting to the latest industry standards
-          </p>
-
-          <div className="space-y-8">
-            {techCategories.map(([category, techs]) => (
-              <div key={category}>
-                <p className="text-xs uppercase tracking-widest text-zinc-600 mb-3">{category}</p>
-                <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-                  {techs.map((name, index) => (
-                    <motion.div
-                      key={name}
-                      initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.85, y: 12 }}
-                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.3 }}
-                      transition={{
-                        delay: prefersReducedMotion ? 0 : index * 0.04,
-                        duration: prefersReducedMotion ? 0.18 : isMobile ? 0.26 : 0.32,
-                        ease: prefersReducedMotion ? "linear" : [0.4, 0, 0.2, 1],
-                      }}
-                      whileHover={{
-                        y: prefersReducedMotion ? -3 : isMobile ? -4 : -6,
-                        scale: prefersReducedMotion ? 1.02 : isMobile ? 1.04 : 1.06,
-                        transition: hoverTransition,
-                      }}
-                      className="group relative"
+        {/* ── BLOCK 2: Stats Strip ── */}
+        <div ref={statsStripRef} className="border-y border-zinc-800/50 py-10 md:py-14 mb-24 md:mb-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
+            {stats.map((stat, i) => (
+              <React.Fragment key={stat.label}>
+                {i > 0 && (
+                  <div className="hidden sm:block w-px h-16 bg-zinc-700/50 mx-12 md:mx-20" />
+                )}
+                <div className="text-center sm:text-left">
+                  <div className="flex items-baseline justify-center sm:justify-start">
+                    <span
+                      ref={(el) => { statNumberRefs.current[i] = el; }}
+                      className="font-display text-5xl md:text-7xl font-bold text-zinc-100"
                     >
-                      <div className="absolute inset-0 bg-purple-500/20 rounded-lg blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="relative px-5 py-2.5 bg-zinc-900/50 border border-zinc-800/40 rounded-lg hover:border-purple-500/30 transition-all duration-300">
-                        <span className="text-zinc-300 font-medium text-sm">{name}</span>
-                      </div>
-                    </motion.div>
-                  ))}
+                      0
+                    </span>
+                    <span className="font-display text-5xl md:text-7xl font-bold text-purple-400">
+                      {stat.suffix}
+                    </span>
+                  </div>
+                  <p className="text-zinc-500 text-sm md:text-base uppercase tracking-widest mt-2">
+                    {stat.label}
+                  </p>
                 </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+
+        {/* ── BLOCK 3: Asymmetric Journey Text ── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-24 md:mb-32">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16">
+            {/* Pull quote — left */}
+            <div className="md:col-span-5">
+              <p
+                ref={pullQuoteRef}
+                className="font-display text-2xl md:text-4xl font-semibold text-zinc-200 leading-snug"
+                style={{ clipPath: "inset(0 0 100% 0)" }}
+              >
+                &ldquo;Every project is an opportunity to learn, innovate, and push the boundaries of what&rsquo;s possible.&rdquo;
+              </p>
+              <div className="mt-6 h-px w-16 bg-purple-500/50" />
+            </div>
+
+            {/* Body text — right */}
+            <div className="md:col-span-6 md:col-start-7 space-y-6">
+              <p
+                ref={(el) => { journeyParaRefs.current[0] = el; }}
+                className="text-zinc-400 text-base md:text-lg leading-relaxed"
+              >
+                With a passion for technology and problem-solving, I&apos;ve dedicated myself to mastering
+                the art of full-stack development. Every project is an opportunity to learn, innovate,
+                and push the boundaries of what&apos;s possible on the web.
+              </p>
+              <p
+                ref={(el) => { journeyParaRefs.current[1] = el; }}
+                className="text-zinc-400 text-base md:text-lg leading-relaxed"
+              >
+                I believe in writing clean, maintainable code and creating intuitive user experiences
+                that make a difference. Whether it&apos;s a complex web application or a sleek landing page,
+                I approach each challenge with enthusiasm and attention to detail.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── BLOCK 4: Full-Width Skill Lines ── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-24 md:mb-32 space-y-12">
+          {skills.map((skill, i) => (
+            <div key={skill.title} ref={(el) => { skillLabelRefs.current[i] = el; }}>
+              <div className="flex justify-between items-baseline mb-4">
+                <span className="font-display text-lg md:text-xl font-semibold text-zinc-200">
+                  {skill.title}
+                </span>
+                <span
+                  ref={(el) => { skillCounterRefs.current[i] = el; }}
+                  className="font-display text-3xl md:text-4xl font-bold text-purple-400"
+                >
+                  0%
+                </span>
+              </div>
+              {/* Full-width line track */}
+              <div className="h-px bg-zinc-800 relative">
+                <div
+                  ref={(el) => { skillLineRefs.current[i] = el; }}
+                  className="absolute top-0 left-0 h-px bg-gradient-to-r from-purple-500 to-violet-500"
+                  style={{ width: "0%" }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ── BLOCK 5: Capability Ticker / Marquee ── */}
+        <div className="overflow-hidden border-t border-zinc-800/50 pt-10 md:pt-14">
+          <div ref={tickerInnerRef} className="flex whitespace-nowrap">
+            {[0, 1, 2].map((repeat) => (
+              <div key={repeat} className="flex shrink-0 items-center">
+                {capabilities.map((cap) => (
+                  <React.Fragment key={`${repeat}-${cap}`}>
+                    <span className="font-display text-3xl md:text-5xl font-bold text-zinc-200/10 uppercase tracking-wide px-6 md:px-10">
+                      {cap}
+                    </span>
+                    <span className="text-purple-500/40 text-2xl" aria-hidden="true">
+                      &#x2022;
+                    </span>
+                  </React.Fragment>
+                ))}
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
+
       </div>
     </section>
   );

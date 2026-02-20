@@ -48,3 +48,17 @@ body {
 .animate-glow-pulse {
   animation: glow-pulse 3s ease-in-out infinite;
 }
+
+/* Glowing outline text for headings */
+@keyframes glow-text {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.4), 0 0 30px rgba(168, 85, 247, 0.2), 0 0 60px rgba(139, 92, 246, 0.1);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 50px rgba(168, 85, 247, 0.5), 0 0 90px rgba(139, 92, 246, 0.3), 0 0 130px rgba(139, 92, 246, 0.15);
+  }
+}
+
+.animate-glow-text {
+  animation: glow-text 3s ease-in-out infinite;
+}
